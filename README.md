@@ -6,20 +6,19 @@ In order to install this plugin, the following modifications were made in
 areaDetector, ADCore, & ioc
 
 In areaDetector/configure/RELEASE.local add:
-
-> NDPLUGINFILEIMM=$(AREA_DETECTOR)/NDPluginFileIMM
-
+```
+NDPLUGINFILEIMM=$(AREA_DETECTOR)/NDPluginFileIMM
+```
 To areaDetector/Makefile add:
-> DIRS := $(DIRS) NDPluginFileIMM
-
-> $(NDPluginFileIMM)_DEPEND_DIRS += $(ADCore)
-
+```
+DIRS := $(DIRS) NDPluginFileIMM
+$(NDPluginFileIMM)_DEPEND_DIRS += $(ADCore)
+```
 in $(ADCore)/ADApp/commonDriverMakefile add:
-> ifdef NDPLUGINFILEIMM
+```
+ifdef NDPLUGINFILEIMM
+  PROD_LIBS             += NDPluginFileIMM
+  $(PROD_NAME)_DBD      += NDPluginFileIMM.dbd
 
->   PROD_LIBS             += NDPluginFileIMM
-
->  $(PROD_NAME)_DBD      += NDPluginFileIMM.dbd
-
-> endif
-
+endif
+```
