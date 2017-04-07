@@ -19,6 +19,5 @@ in $(ADCore)/ADApp/commonDriverMakefile add:
 ifdef NDPLUGINFILEIMM
   PROD_LIBS             += NDPluginFileIMM
   $(PROD_NAME)_DBD      += NDPluginFileIMM.dbd
-
 endif
 ```
