@@ -13,3 +13,12 @@ This plugin, in addition to writing data from the NDArray into compressed IMM
 file, also provides links to the detectorMPI program, that allow setting/getting
 parameters of that program, via separate command input and output pipes.   
   
+  
+
+Running in scatter/gather mode.  
+To produce NDArrays, set NDFileIMM_throw_images to 1
+To compute IMM but not save files, name filename to NULL.
+To run forever, set Capture, or num of frames to capture to -1.
+
+
+

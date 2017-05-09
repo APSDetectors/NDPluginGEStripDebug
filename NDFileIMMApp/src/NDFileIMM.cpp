@@ -93,6 +93,12 @@ asynStatus NDFileIMM::openFile(const char *fileName, NDFileOpenMode_t openMode, 
 	int is_update;
     static const char *functionName = "openFile";
 
+    //
+    // if filename is NULL, then we don't open a file on filesystem, but we will pretend we are writing to files,. this is for
+    // compuyting IMM format without actuallty writing to disk. 
+    //
+
+
     /* We don't support reading yet */
     if (openMode & NDFileModeRead) return(asynError);
 
@@ -556,7 +562,9 @@ asynStatus NDFileIMM::writeFile(NDArray *pArray)
     setIntegerParam(NDFileIMM_fileevent,0);
 	setIntegerParam(NDFileNumCaptured,this->nextRecord);
     getIntegerParam(NDFileNumCapture,&ii0);
-	if (this->nextRecord >= ii0)
+    
+    // if num to captuer is -1 we wioll run forever.
+	if ((this->nextRecord >= ii0) && (ii0 != -1))
 	{
 		setIntegerParam(NDFileNumCaptured,ii0);
 		closeFile();

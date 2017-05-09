@@ -33,6 +33,16 @@ void compressed_file::open_w(
 {
 
 	char fullname[512];
+   //
+    // if filename is NULL, then we don't open a file on filesystem, but we will pretend we are writing to files,. this is for
+    // compuyting IMM format without actuallty writing to disk. 
+    //
+
+    is_open=true;   
+    if (strcmp(name,"NULL")==0)
+        return;
+        
+        
 
 	if (start_num!= -1)
 		sprintf(fullname,"%s_%05i-%05i.bin",name,start_num,end_number);
@@ -59,6 +69,18 @@ void compressed_file::open_w(
 {
 
 	char fullname[512];
+
+
+   //
+    // if filename is NULL, then we don't open a file on filesystem, but we will pretend we are writing to files,. this is for
+    // compuyting IMM format without actuallty writing to disk. 
+    //
+
+    is_open=true;   
+
+    if (strcmp(name,"NULL")==0)
+        return;
+
 
 	if (start_num!= -1)
 		sprintf(fullname,"%s_%05i-%05i.imm",name,start_num,end_number);
@@ -87,6 +109,12 @@ void compressed_file::open_r(
 
 	char fullname[512];
 
+    is_open=true;   
+
+    if (strcmp(name,"NULL")==0)
+        return;
+
+
 	sprintf(fullname,"%s_%05i-%05i.bin",name,start_num,end_number);
 
 	myfile = new image_file(
@@ -108,6 +136,12 @@ void compressed_file::open_r(
 {
 
 	char fullname[512];
+    is_open=true;   
+
+    if (strcmp(name,"NULL")==0)
+        return;
+
+
 
 	sprintf(fullname,"%s_%05i-%05i.bin",name,start_num,end_number);
 
@@ -140,6 +174,10 @@ void compressed_file::appendImage(
 		void *img_ptr)
 {
 	int num_bytes;
+    
+    if (myfile==0)
+        return;
+    
 	myfile->write((char*)head, compressed_header::header_size);
 
 	num_bytes = head->rows * head->bytes * head->cols;
@@ -880,8 +918,7 @@ void compressed_file::saveFileIMMRaw(
 		header->buffer_number = buf_num;
 
 
-
-
+        if (this->myfile)
 			this->myfile->write((char*)IMM_image,IMM_bytes);
 
 
@@ -965,7 +1002,7 @@ void compressed_file::saveFileIMMRaw(
 		header->buffer_number = buf_num;
 
 
-
+        if (this->myfile)
 			this->myfile->write((char*)IMM_image,IMM_bytes);
 
 
@@ -1052,7 +1089,7 @@ void compressed_file::saveFileIMMComp(
 		*num_comp_pixels=header->dlen;
 
 
-
+        if (this->myfile)
 			this->myfile->write((char*)IMM_image,IMM_bytes);
 
 		last_nbytes=IMM_bytes;
@@ -1137,7 +1174,7 @@ void compressed_file::saveFileIMMComp(
 		*num_comp_pixels=header->dlen;
 
 
-
+        if (this->myfile)
 			this->myfile->write((char*)IMM_image,IMM_bytes);
 
 
