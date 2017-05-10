@@ -39,8 +39,13 @@ void compressed_file::open_w(
     //
 
     is_open=true;   
+   
     if (strcmp(name,"NULL")==0)
+    { 
+        printf("Writing to virtual IMM file. Making IMM format but not writing.\n");
+    
         return;
+     }
         
         
 
@@ -79,7 +84,10 @@ void compressed_file::open_w(
     is_open=true;   
 
     if (strcmp(name,"NULL")==0)
+    {
+        printf("Writing to virtual IMM file. Making IMM format but not writing.\n");
         return;
+    }
 
 
 	if (start_num!= -1)
@@ -217,7 +225,11 @@ void compressed_file::fillHeaderZZFF(compressed_header *h)
 
 void compressed_file::readTopHeader(compressed_header* head)
 {
-	myfile->rewind();
+	if (myfile==0)
+        return;
+        
+        
+    myfile->rewind();
 	myfile->read((char*)head, compressed_header::header_size);
 
 }
@@ -237,6 +249,9 @@ void compressed_file::readImage(
 
 	num_bytes = head->rows * head->bytes * head->cols;
 
+	if (myfile==0)
+        return;
+      
 	myfile->read(
 			(char*) head,
 			compressed_header::header_size,

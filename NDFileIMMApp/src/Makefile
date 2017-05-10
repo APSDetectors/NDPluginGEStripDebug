@@ -13,6 +13,9 @@ endif
 
 #USR_INCLUDES += $(GOOGLEPROTO_INCLUDE)
 
+
+LIBRARY_IOC = NDPluginIMM
+
 DBD += IMMpluginSupport.dbd
 
 INC += NDFileIMM.h
@@ -20,7 +23,6 @@ INC += compressed_file2.h
 INC += image_file2.h
 INC += drvNDFileIMM.h
 
-LIBRARY_IOC += NDPluginIMM
 
 NDPluginIMM_SRCS += NDFileIMM.cpp
 NDPluginIMM_SRCS += compressed_file2.cpp
