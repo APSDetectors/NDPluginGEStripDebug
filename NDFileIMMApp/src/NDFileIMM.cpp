@@ -156,8 +156,8 @@ asynStatus NDFileIMM::openFile(const char *fileName, NDFileOpenMode_t openMode, 
 
 
 
-
-	setStringParam(NDFullFileName,cf->myfile->file_name);
+    if (cf->myfile !=0)
+    	setStringParam(NDFullFileName,cf->myfile->file_name);
 
    
 
@@ -177,7 +177,9 @@ asynStatus NDFileIMM::openFile(const char *fileName, NDFileOpenMode_t openMode, 
 		   setIntegerParam(NDFileWriteStatus, NDFileWriteOK);
 		   setStringParam(NDFileWriteMessage, "");
 
-		int chstat=_chmod(cf->myfile->file_name,0777);
+        int chstat;
+        if (cf->myfile != 0)
+		    chstat=_chmod(cf->myfile->file_name,0777);
 
 	}
     return(asynSuccess);
@@ -193,7 +195,7 @@ asynStatus NDFileIMM::writeFile(NDArray *pArray)
 	int is_update;
 	int fnx;
 	int is_throw_frame=0;
-	int dimSizeOut[ND_ARRAY_MAX_DIMS];
+	size_t dimSizeOut[ND_ARRAY_MAX_DIMS];
     int i;
 
 	if (!is_open_good)
@@ -327,9 +329,11 @@ asynStatus NDFileIMM::writeFile(NDArray *pArray)
 			//	dimSizeOut[i] = pArray->dims[i].size;
 			//have to assume as have 2 dims for image.
 			// we add 2000 for the header.. it is act only 1024, but we get extra room...
-		dimSizeOut[0]=1;
-		dimSizeOut[1]= 2000 + pArray->dims[0].size * pArray->dims[1].size;
-		    my_array = pNDArrayPool->alloc(pArray->ndims,(size_t*) dimSizeOut, pArray->dataType, (size_t)0, (void*)0);
+		dimSizeOut[0]=(size_t)1;
+		dimSizeOut[1]= (size_t)(2000 + pArray->dims[0].size * pArray->dims[1].size);
+		    my_array = this->pNDArrayPool->alloc(2,dimSizeOut, pArray->dataType, (size_t)0, (void*)0);
+             
+            
 			if (my_array==0)
 			{
 				printf("ERROR- IMM plugin could not get NDArray\n");
@@ -363,7 +367,9 @@ asynStatus NDFileIMM::writeFile(NDArray *pArray)
 
 		immh->buffer_number = this->nextRecord;
 
-        cf->myfile->write((char*)(pArray->pData),pipe_num_shorts*2);
+        if (cf->myfile != 0)
+            cf->myfile->write((char*)(pArray->pData),pipe_num_shorts*2);
+    
         this->nextRecord++;
 
         getIntegerParam(NDFileNumber,&fnx);
@@ -1107,7 +1113,7 @@ NDFileIMM::NDFileIMM(const char *portName, int queueSize, int blockingCallbacks,
                        int priority, int stackSize) :
      NDPluginFile(portName, queueSize, blockingCallbacks,
                    NDArrayPort, NDArrayAddr, 1, NDFileIMM::num_params,
-                   500, -1, asynGenericPointerMask, asynGenericPointerMask,
+                   500, 0, asynGenericPointerMask, asynGenericPointerMask,
                    ASYN_CANBLOCK, 1, priority, stackSize)
 
 

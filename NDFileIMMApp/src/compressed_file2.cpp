@@ -39,8 +39,13 @@ void compressed_file::open_w(
     //
 
     is_open=true;   
+   
     if (strcmp(name,"NULL")==0)
+    { 
+        printf("Writing to virtual IMM file. Making IMM format but not writing.\n");
+    
         return;
+     }
         
         
 
@@ -79,7 +84,10 @@ void compressed_file::open_w(
     is_open=true;   
 
     if (strcmp(name,"NULL")==0)
+    {
+        printf("Writing to virtual IMM file. Making IMM format but not writing.\n");
         return;
+    }
 
 
 	if (start_num!= -1)
@@ -217,7 +225,11 @@ void compressed_file::fillHeaderZZFF(compressed_header *h)
 
 void compressed_file::readTopHeader(compressed_header* head)
 {
-	myfile->rewind();
+	if (myfile==0)
+        return;
+        
+        
+    myfile->rewind();
 	myfile->read((char*)head, compressed_header::header_size);
 
 }
@@ -237,6 +249,9 @@ void compressed_file::readImage(
 
 	num_bytes = head->rows * head->bytes * head->cols;
 
+	if (myfile==0)
+        return;
+      
 	myfile->read(
 			(char*) head,
 			compressed_header::header_size,
@@ -414,6 +429,7 @@ void compressed_file::rawToIMM(
     uint32_t *IMM_data_int32_t;
 	compressed_header *IMM_header;
 	unsigned short* IMM_data_short;
+	unsigned char* IMM_data_char;
 	unsigned char *IMMptr;
 
 
@@ -424,11 +440,12 @@ void compressed_file::rawToIMM(
 	// point header to top of new memory
 	IMM_header=(compressed_header*)*IMM_image;
 
+    //clearw header.
 	IMMptr = *IMM_image;
 	for (k=0;k<compressed_header::header_size;k++)
 		IMMptr[k] = 0;
 
-
+    //put in the ZZ
 	fillHeaderZZFF(IMM_header);
 
 	//
@@ -450,6 +467,7 @@ void compressed_file::rawToIMM(
 		IMM_header->corecotick=raw_timestamp;
 
 	 IMM_data_short = (unsigned short*)(*IMM_image+compressed_header::header_size);
+	 IMM_data_char = (unsigned char*)(*IMM_image+compressed_header::header_size);
 
 
 	//
@@ -505,6 +523,7 @@ void compressed_file::rawToCompIMM(
 	unsigned char* raw_image_uc;
 
 	unsigned short* pix_val_s;
+    unsigned char* pix_val_c;
 	unsigned int *IMM_data_int;
 	compressed_header *IMM_header;
 	unsigned short* IMM_data_short;
@@ -562,6 +581,7 @@ void compressed_file::rawToCompIMM(
 	location = 0;
 
 	pix_val_s=(unsigned short*)this->scratch_memory2;
+	pix_val_c=(unsigned char*)this->scratch_memory2;
 
 
 	if (raw_precision==2)
@@ -588,9 +608,9 @@ void compressed_file::rawToCompIMM(
 			if (*raw_image_uc > threshold)
 			{
 				*IMM_data_int = location;
-				*pix_val_s=(unsigned short)*raw_image_uc;
+				*pix_val_c=*raw_image_uc;
 				IMM_data_int++;
-				pix_val_s++;
+				pix_val_c++;
 				num_pixels++;
 			}
 			raw_image_uc++;
@@ -602,9 +622,11 @@ void compressed_file::rawToCompIMM(
 
 
 	// fill in the pix value section of the IMM image. just copy...
-	memcpy((void*)IMM_data_int,(void*)this->scratch_memory2,num_pixels*sizeof(short));
-
-
+    //IMM_data_int points to memoryt just AFTER puixel location data, or start of pix valdata.
+    if (raw_precision==2)
+    	memcpy((void*)IMM_data_int,(void*)this->scratch_memory2,num_pixels*sizeof(short));
+    else // char data
+        memcpy((void*)IMM_data_int,(void*)this->scratch_memory2,num_pixels*sizeof(char));
 
 
 	IMM_header->dlen = num_pixels;
@@ -612,8 +634,14 @@ void compressed_file::rawToCompIMM(
 
 	// calculate the size of the new compressde image in bytes
 	*IMM_bytes = compressed_header::header_size;
+    //puxel location data
     *IMM_bytes = *IMM_bytes + sizeof(uint32_t)*num_pixels;
-	*IMM_bytes = *IMM_bytes + sizeof(unsigned short)*num_pixels;
+    //pxel value 
+    if (raw_precision==2)
+	    *IMM_bytes = *IMM_bytes + sizeof(unsigned short)*num_pixels;
+    else //char
+        *IMM_bytes = *IMM_bytes + sizeof(unsigned char)*num_pixels;
+        
 
 
 }
