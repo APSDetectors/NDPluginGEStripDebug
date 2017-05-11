@@ -333,6 +333,15 @@ asynStatus NDFileIMM::writeFile(NDArray *pArray)
 		dimSizeOut[1]= (size_t)(2000 + pArray->dims[0].size * pArray->dims[1].size);
 		    my_array = this->pNDArrayPool->alloc(2,dimSizeOut, pArray->dataType, (size_t)0, (void*)0);
              
+          int one = 1;
+                 
+        //add new attr to img, if not already there. if there, it updates values         
+        my_array->pAttributeList->add(
+            "is_already_imm", 
+            "if 1 then this is imm data",
+             NDAttrInt32, 
+             &one);
+             
             
 			if (my_array==0)
 			{
@@ -726,7 +735,7 @@ void NDFileIMM::processCallbacks(NDArray *pArray)
         {
             pAttribute->getValue(attrDataType, (void*)&is_already_imm, attrSize);
             if (is_at_msg)
-                printf("is_already_imm = %f\n", is_already_imm);
+                printf("is_already_imm = %d\n", is_already_imm);
         }
         if (strcmp(name,"num_pixels")==0)
         {
