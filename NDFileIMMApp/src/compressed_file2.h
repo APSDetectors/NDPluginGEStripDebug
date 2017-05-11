@@ -260,6 +260,10 @@ public:
 		int index,
 		compressed_header *head,
 		void *img_data);
+        
+        
+   int getNumBytes(compressed_header *head);
+     
 
 	image_file *myfile;
 

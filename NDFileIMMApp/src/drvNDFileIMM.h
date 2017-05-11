@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-int drvNDFileIMMConfigure(const char *portName, int queueSize, int blockingCallbacks,
+int drvNDFileIMMConfigure(const char *portName,int max_imm_bytes, int queueSize, int blockingCallbacks,
                              const char *NDArrayPort, int NDArrayAddr,
                              int priority, int stackSize);
 

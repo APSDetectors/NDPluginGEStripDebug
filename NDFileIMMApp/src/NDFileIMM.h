@@ -80,7 +80,7 @@ using namespace nd_imm_plugin;
 
 class NDFileIMM : public NDPluginFile {
 public:
-    NDFileIMM(const char *portName, int queueSize, int blockingCallbacks,
+    NDFileIMM(const char *portName,int max_imm_bytes, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,
                  int priority, int stackSize);
 
@@ -111,7 +111,8 @@ protected:
     int timeStampId;
     int nextRecord;
     int *pAttributeId;
-
+    
+    int max_imm_bytes;
 		bool is_open_good;
 
 	compressed_file *cf;
@@ -169,12 +170,14 @@ protected:
 	// Params
 	//
 	int NDFileIMM_threshold;
+    // from old dalsa fpga real time compression fpga, old fccd
 	int NDFileIMM_is_fpga_comp;
 	int NDFileIMM_fpga_timestamp;
 	int NDFileIMM_grabber_timestamp;
 	int NDFileIMM_num_bad_fpgaheads;
 	int NDFileIMM_num_fpga_pixels;
 	int NDFileIMM_num_comp_frames;
+    
     int NDFileIMM_timestamp;
     int NDFileIMM_uniqueID;
     int NDFileIMM_fileCorecoticks;
