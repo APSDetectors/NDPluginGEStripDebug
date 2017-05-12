@@ -1452,5 +1452,48 @@ void compressed_file::setBufferNumber(int b)
 	buf_num = b;
 }
 
+ 
+int compressed_file::getNumBytes(compressed_header *head)
+{
+    int num_bytes = 0;
+    
+    if (head->mode ==2)
+    {
+    
+        if (head->compression==6)
+        {
+            //compressed
+            num_bytes = compressed_header::header_size;
+            num_bytes += sizeof(uint32_t)*(head->dlen);
+            num_bytes +=  (head->bytes)*(head->dlen);
+            return(num_bytes);
+            
+        }
+        else if (head->compression==0)
+        {
+           //uncompressed
+            num_bytes = compressed_header::header_size;           
+            num_bytes +=  (head->bytes)*(head->dlen);
+            return(num_bytes);
+        }
+        else
+        {
+            return(-1);
+        }
+    }
+    else
+    {
+        return(-2);
+    }
+
+}
+
+    
+    
+
+
 
 };
+
+
+

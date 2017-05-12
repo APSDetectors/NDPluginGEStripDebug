@@ -330,8 +330,8 @@ asynStatus NDFileIMM::writeFile(NDArray *pArray)
 			//have to assume as have 2 dims for image.
 			// we add 2000 for the header.. it is act only 1024, but we get extra room...
 		dimSizeOut[0]=(size_t)1;
-		dimSizeOut[1]= (size_t)(2000 + pArray->dims[0].size * pArray->dims[1].size);
-		    my_array = this->pNDArrayPool->alloc(2,dimSizeOut, pArray->dataType, (size_t)0, (void*)0);
+		dimSizeOut[1]= this->max_imm_bytes;
+		    my_array = this->pNDArrayPool->alloc(2,dimSizeOut, NDUInt8, (size_t)0, (void*)0);
              
           int one = 1;
                  
@@ -342,7 +342,10 @@ asynStatus NDFileIMM::writeFile(NDArray *pArray)
              NDAttrInt32, 
              &one);
              
-            
+         my_array->uniqueId = pArray->uniqueId;
+         my_array->timeStamp= pArray->timeStamp;
+         
+         
 			if (my_array==0)
 			{
 				printf("ERROR- IMM plugin could not get NDArray\n");
@@ -376,8 +379,10 @@ asynStatus NDFileIMM::writeFile(NDArray *pArray)
 
 		immh->buffer_number = this->nextRecord;
 
+        int imm_bytes = cf->getNumBytes(immh);
+        
         if (cf->myfile != 0)
-            cf->myfile->write((char*)(pArray->pData),pipe_num_shorts*2);
+            cf->myfile->write((char*)(pArray->pData),imm_bytes);
     
         this->nextRecord++;
 
@@ -418,9 +423,9 @@ asynStatus NDFileIMM::writeFile(NDArray *pArray)
 		  if (cf->last_nbytes<=my_array->dataSize)
 		  {
 			  memcpy(my_array->pData, cf->last_data, cf->last_nbytes);
-		 my_array->dims[0].size=cf->last_nbytes;
-		 my_array->dims[1].size=1;
-		 my_array->dataType= NDUInt8;
+		 //my_array->dims[0].size=cf->last_nbytes;
+		 //my_array->dims[1].size=1;
+		 //my_array->dataType= NDUInt8;
 
 		/* Get the attributes for this driver */
 	    this->getAttributes(my_array->pAttributeList);
@@ -483,9 +488,9 @@ asynStatus NDFileIMM::writeFile(NDArray *pArray)
 						 if (cf->last_nbytes<=my_array->dataSize)
 						 {
 						 	memcpy(my_array->pData, cf->last_data, cf->last_nbytes);
-						 my_array->dims[0].size=cf->last_nbytes;
-						 my_array->dims[1].size=1;
-						 my_array->dataType= NDUInt8;
+						 //my_array->dims[0].size=cf->last_nbytes;
+						 //my_array->dims[1].size=1;
+						// my_array->dataType= NDUInt8;
 
 							/* Get the attributes for this driver */
 						    this->getAttributes(my_array->pAttributeList);
@@ -546,9 +551,9 @@ asynStatus NDFileIMM::writeFile(NDArray *pArray)
 				  if (cf->last_nbytes<=my_array->dataSize)
 				  {
 					 memcpy(my_array->pData, cf->last_data, cf->last_nbytes);
-					 my_array->dims[0].size=cf->last_nbytes;
-				 my_array->dims[1].size=1;
-				 my_array->dataType= NDUInt8;
+					// my_array->dims[0].size=cf->last_nbytes;
+				 //my_array->dims[1].size=1;
+				// my_array->dataType= NDUInt8;
 
 						/* Get the attributes for this driver */
 					    this->getAttributes(my_array->pAttributeList);
@@ -788,7 +793,7 @@ void NDFileIMM::processCallbacks(NDArray *pArray)
         else
             setIntegerParam(NDFileIMM_is_fpga_comp,0);
 
-        fpga_pixels=(immh->dlen)/2;
+        fpga_pixels=immh->dlen;
     }
 
 
@@ -1074,11 +1079,11 @@ int NDFileIMM::recursePath(char *pathstr, bool is_makedirs)
 
 /* Configuration routine.  Called directly, or from the iocsh function in drvNDFileEpics */
 
-extern "C" int drvNDFileIMMConfigure(const char *portName, int queueSize, int blockingCallbacks,
+extern "C" int drvNDFileIMMConfigure(const char *portName, int max_imm_bytes, int queueSize, int blockingCallbacks,
                                    const char *NDArrayPort, int NDArrayAddr,
                                    int priority, int stackSize)
 {
-  NDFileIMM *pPlugin =  new NDFileIMM(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+  NDFileIMM *pPlugin =  new NDFileIMM(portName,max_imm_bytes, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
                        priority, stackSize);
   //  return(asynSuccess);
   return pPlugin->start();
@@ -1086,6 +1091,7 @@ extern "C" int drvNDFileIMMConfigure(const char *portName, int queueSize, int bl
 }
 /* EPICS iocsh shell commands */
 static const iocshArg initArg0 = { "portName",iocshArgString};
+static const iocshArg initArg01 = { "max_imm_bytes",iocshArgInt};
 static const iocshArg initArg1 = { "frame queue size",iocshArgInt};
 static const iocshArg initArg2 = { "blocking callbacks",iocshArgInt};
 static const iocshArg initArg3 = { "NDArrayPort",iocshArgString};
@@ -1093,18 +1099,19 @@ static const iocshArg initArg4 = { "NDArrayAddr",iocshArgInt};
 static const iocshArg initArg5 = { "priority",iocshArgInt};
 static const iocshArg initArg6 = { "stackSize",iocshArgInt};
 static const iocshArg * const initArgs[] = {&initArg0,
-                                            &initArg1,
+                                            &initArg01,
+                                            &initArg1,                                           
                                             &initArg2,
                                             &initArg3,
                                             &initArg4,
                                             &initArg5,
                                             &initArg6};
-static const iocshFuncDef initFuncDef = {"NDFileIMMConfigure",7,initArgs};
+static const iocshFuncDef initFuncDef = {"NDFileIMMConfigure",8,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
-  drvNDFileIMMConfigure(args[0].sval, args[1].ival, args[2].ival,
-                       args[3].sval,args[4].ival, 
-                       args[5].ival, args[6].ival);
+  drvNDFileIMMConfigure(args[0].sval,args[1].ival, args[2].ival, args[3].ival,
+                       args[4].sval,args[5].ival, 
+                       args[6].ival, args[7].ival);
 }
 
 extern "C" void NDFileIMMRegister(void)
@@ -1117,7 +1124,8 @@ extern "C" {
 }
 
 /* The constructor for this class */
-NDFileIMM::NDFileIMM(const char *portName, int queueSize, int blockingCallbacks,
+//max_imm_bytes is size of NDArray thrown, 1 x IMMLength bytes
+NDFileIMM::NDFileIMM(const char *portName,int max_imm_bytes ,int queueSize, int blockingCallbacks,
                        const char *NDArrayPort, int NDArrayAddr,
                        int priority, int stackSize) :
      NDPluginFile(portName, queueSize, blockingCallbacks,
@@ -1130,7 +1138,7 @@ NDFileIMM::NDFileIMM(const char *portName, int queueSize, int blockingCallbacks,
 {
 	int i;
 
-
+    this->max_imm_bytes = max_imm_bytes;
 	is_open_good=true;
 
 		paramStrings[0]=new param_type_str(&NDFileIMM_threshold,asynParamInt32,"NDFileIMM_threshold");
