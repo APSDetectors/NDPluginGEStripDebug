@@ -127,13 +127,12 @@ protected:
 
 	int ii0,ii1;
 
-	int threshold, is_fpga_comp;
+	int threshold, is_imm_comp;
 		double acq_time;
-	unsigned int corecoticks;
-	unsigned int num_bad_fpgaheads;
-	int fpga_pixels;
+	
+	int imm_pixels;
 	unsigned int fpga_timestamp;
-	int fpga_comp_frames;
+	
 	comp_img_header *fpga_header;
 
     int is_already_imm;
@@ -171,18 +170,13 @@ protected:
 	//
 	int NDFileIMM_threshold;
     // from old dalsa fpga real time compression fpga, old fccd
-	int NDFileIMM_is_fpga_comp;
-	int NDFileIMM_fpga_timestamp;
-	int NDFileIMM_grabber_timestamp;
-	int NDFileIMM_num_bad_fpgaheads;
-	int NDFileIMM_num_fpga_pixels;
-	int NDFileIMM_num_comp_frames;
+	int NDFileIMM_is_imm_comp;
+	
+	int NDFileIMM_num_imm_pixels;
+	
     
     int NDFileIMM_timestamp;
     int NDFileIMM_uniqueID;
-    int NDFileIMM_fileCorecoticks;
-    int NDFileIMM_fileSysticks;
-    int NDFileIMM_fileElapsed;
     int NDFileIMM_printAttributes;
     int NDFileIMM_NmissedTimeStamps;
     int NDFileIMM_framePeriod;
@@ -190,8 +184,16 @@ protected:
 	int NDFileIMM_Nimg_rst_ts;
 	int NDFileIMM_throw_images;
 	int NDFileIMM_fileevent;
+    
+    int NDFileIMM_is_already_imm;
+    int NDFileIMM_imm_systicks;
+    int NDFileIMM_imm_corecoticks;
+    int NDFileIMM_imm_elapsed;
+    int NDFileIMM_imm_dlen;
+    
+    
 
-	enum {num_params=19};
+	enum {num_params=17};
 	param_type_str *paramStrings[num_params];
 
 		unsigned int file_coreco_ts;
