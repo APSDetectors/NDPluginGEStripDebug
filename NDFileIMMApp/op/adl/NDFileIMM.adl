@@ -1,7 +1,7 @@
 
 file {
-	name="/local/epics/synApps_5_8/support/areaDetector-R2-5/NDPluginFileIMM/NDFileIMMApp/op/adl/NDFileIMM.adl"
-	version=030107
+	name="/home/beams/TMADDEN/EPICS/ADEpics/synApps_5_5/support/areaDetector-R2-5/NDPluginFileIMM/NDFileIMMApp/op/adl/NDFileIMM.adl"
+	version=030112
 }
 display {
 	object {
@@ -555,49 +555,6 @@ text {
 	textix="Time Stamps In File"
 	align="horiz. right"
 }
-menu {
-	object {
-		x=519
-		y=275
-		width=81
-		height=16
-	}
-	control {
-		chan="$(P)$(R)NDFileIMM_fileCorecoticks"
-		clr=14
-		bclr=4
-	}
-}
-text {
-	object {
-		x=29
-		y=289
-		width=140
-		height=15
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="FPGA TimeStamp"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=177
-		y=289
-		width=142
-		height=15
-	}
-	monitor {
-		chan="$(P)$(R)NDFileIMM_fpga_timestamp_RBV"
-		clr=14
-		bclr=4
-	}
-	align="horiz. right"
-	format="string"
-	limits {
-	}
-}
 text {
 	object {
 		x=28
@@ -650,152 +607,6 @@ text {
 	}
 	monitor {
 		chan="$(P)$(R)NDFileIMM_uniqueID_RBV"
-		clr=14
-		bclr=4
-	}
-	align="horiz. right"
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=29
-		y=271
-		width=140
-		height=15
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Grabber TimeStamp"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=177
-		y=271
-		width=142
-		height=15
-	}
-	monitor {
-		chan="$(P)$(R)NDFileIMM_grabber_timestamp_RBV"
-		clr=14
-		bclr=4
-	}
-	align="horiz. right"
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=604
-		y=276
-		width=72
-		height=15
-	}
-	monitor {
-		chan="$(P)$(R)NDFileIMM_fileCorecoticks_RBV"
-		clr=14
-		bclr=4
-	}
-	align="horiz. right"
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=398
-		y=276
-		width=111
-		height=15
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Corecoticks"
-	align="horiz. right"
-}
-text {
-	object {
-		x=399
-		y=296
-		width=111
-		height=15
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="elapsed"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=520
-		y=295
-		width=81
-		height=16
-	}
-	control {
-		chan="$(P)$(R)NDFileIMM_fileElapsed"
-		clr=14
-		bclr=4
-	}
-}
-"text update" {
-	object {
-		x=605
-		y=296
-		width=72
-		height=15
-	}
-	monitor {
-		chan="$(P)$(R)NDFileIMM_fileElapsed_RBV"
-		clr=14
-		bclr=4
-	}
-	align="horiz. right"
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=400
-		y=317
-		width=111
-		height=15
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="systicks"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=521
-		y=316
-		width=81
-		height=16
-	}
-	control {
-		chan="$(P)$(R)NDFileIMM_fileSysticks"
-		clr=14
-		bclr=4
-	}
-}
-"text update" {
-	object {
-		x=606
-		y=317
-		width=72
-		height=15
-	}
-	monitor {
-		chan="$(P)$(R)NDFileIMM_fileSysticks_RBV"
 		clr=14
 		bclr=4
 	}
@@ -989,30 +800,13 @@ composite {
 rectangle {
 	object {
 		x=9
-		y=618
+		y=600
 		width=671
-		height=75
+		height=95
 	}
 	"basic attribute" {
 		clr=14
 		fill="outline"
-	}
-}
-"text update" {
-	object {
-		x=158
-		y=546
-		width=142
-		height=20
-	}
-	monitor {
-		chan="$(P)$(R)NDFileIMM_num_bad_fpgaheads_RBV"
-		clr=14
-		bclr=4
-	}
-	align="horiz. right"
-	format="string"
-	limits {
 	}
 }
 "text update" {
@@ -1099,24 +893,7 @@ text {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(R)NDFileIMM_num_fpga_pixels_RBV"
-		clr=14
-		bclr=4
-	}
-	align="horiz. right"
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=503
-		y=529
-		width=142
-		height=20
-	}
-	monitor {
-		chan="$(P)$(R)NDFileIMM_num_comp_frames_RBV"
+		chan="$(P)$(R)NDFileIMM_num_imm_pixels_RBV"
 		clr=14
 		bclr=4
 	}
@@ -1138,19 +915,6 @@ text {
 	textix="Comp Pixels"
 	align="horiz. right"
 }
-text {
-	object {
-		x=349
-		y=530
-		width=140
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Comp. Frames"
-	align="horiz. right"
-}
 "text update" {
 	object {
 		x=200
@@ -1159,7 +923,7 @@ text {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(R)NDFileIMM_is_fpga_comp_RBV"
+		chan="$(P)$(R)NDFileIMM_is_imm_comp_RBV"
 		clr=14
 		bclr=4
 	}
@@ -1167,19 +931,6 @@ text {
 	format="string"
 	limits {
 	}
-}
-text {
-	object {
-		x=9
-		y=547
-		width=140
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Bad Images"
-	align="horiz. right"
 }
 text {
 	object {
@@ -1212,7 +963,7 @@ rectangle {
 		x=7
 		y=473
 		width=669
-		height=139
+		height=120
 	}
 	"basic attribute" {
 		clr=14
@@ -1461,4 +1212,194 @@ composite {
 	}
 	clr=14
 	bclr=4
+}
+text {
+	object {
+		x=28
+		y=292
+		width=140
+		height=15
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Is IMM?"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=176
+		y=292
+		width=142
+		height=15
+	}
+	monitor {
+		chan="$(P)$(R)NDFileIMM_is_already_imm_RBV"
+		clr=14
+		bclr=4
+	}
+	align="horiz. right"
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=387
+		y=265
+		width=140
+		height=15
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="dlen"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=535
+		y=265
+		width=142
+		height=15
+	}
+	monitor {
+		chan="$(P)$(R)NDFileIMM_imm_dlen_RBV"
+		clr=14
+		bclr=4
+	}
+	align="horiz. right"
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=388
+		y=283
+		width=140
+		height=15
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="systick"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=536
+		y=283
+		width=142
+		height=15
+	}
+	monitor {
+		chan="$(P)$(R)NDFileIMM_imm_systicks_RBV"
+		clr=14
+		bclr=4
+	}
+	align="horiz. right"
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=387
+		y=298
+		width=140
+		height=15
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="corecotick"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=535
+		y=298
+		width=142
+		height=15
+	}
+	monitor {
+		chan="$(P)$(R)NDFileIMM_imm_corecoticks_RBV"
+		clr=14
+		bclr=4
+	}
+	align="horiz. right"
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=388
+		y=314
+		width=140
+		height=15
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="elapsed"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=536
+		y=314
+		width=142
+		height=15
+	}
+	monitor {
+		chan="$(P)$(R)NDFileIMM_imm_elapsed_RBV"
+		clr=14
+		bclr=4
+	}
+	align="horiz. right"
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=102
+		y=604
+		width=540
+		height=15
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Set File Name = NULL, Capture=-1 to run forever"
+}
+"text update" {
+	object {
+		x=501
+		y=669
+		width=140
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)NDFileIMM_throw_images_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=313
+		y=668
+		width=160
+		height=20
+	}
+	control {
+		chan="$(P)$(R)NDFileIMM_throw_images"
+		clr=14
+		bclr=51
+	}
 }

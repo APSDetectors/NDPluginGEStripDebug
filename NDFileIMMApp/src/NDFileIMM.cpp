@@ -115,12 +115,11 @@ asynStatus NDFileIMM::openFile(const char *fileName, NDFileOpenMode_t openMode, 
 
     /* Set the next record in the file to 0 */
 
-	num_bad_fpgaheads=0;
+	
 
 //	printf("FileName: %s\n", fileName);
     /* Create the file. */
 //!! we shoudl override CDPluginDriver:;, NDPludFile, openBase, Writebase and createFileName functions to take care of filenumbers and filenames.
-// filenumber will not inc properly for fpga compressed files.
 
 		// -1 because baseclass autoincs by 1. so we take it off...
 
@@ -208,68 +207,14 @@ asynStatus NDFileIMM::writeFile(NDArray *pArray)
 
 
 
-			 file_coreco_ts=0;
-			 file_elapsed_ts=0.0;
-			 file_systick_ts=0;
-
-	if (getIntParam(NDFileIMM_fileCorecoticks)==xcorecoticks)
-	{
-		file_coreco_ts=getIntParam(NDFileIMM_grabber_timestamp);
-	}
-	else if (getIntParam(NDFileIMM_fileCorecoticks)==xfpga_ts)
-	{
-		file_coreco_ts=getIntParam(NDFileIMM_fpga_timestamp);
-	}
-	else if (getIntParam(NDFileIMM_fileCorecoticks)==xarray_timestamp)
-	{
-		file_coreco_ts=(int)(getDoubParam(NDFileIMM_timestamp));
-	}
-	else if (getIntParam(NDFileIMM_fileCorecoticks)==xarray_unique_id)
-	{
+	
+	
 		file_coreco_ts=getIntParam(NDFileIMM_uniqueID);
-	}
 
 
-
-	if (getIntParam(NDFileIMM_fileElapsed)==xcorecoticks)
-	{
-		file_elapsed_ts=(double)(getIntParam(NDFileIMM_grabber_timestamp));
-	}
-	else if (getIntParam(NDFileIMM_fileElapsed)==xfpga_ts)
-	{
-		file_elapsed_ts=(double)(getIntParam(NDFileIMM_fpga_timestamp));
-	}
-	else if (getIntParam(NDFileIMM_fileElapsed)==xarray_timestamp)
-	{
 		file_elapsed_ts=getDoubParam(NDFileIMM_timestamp);
-	}
-	else if (getIntParam(NDFileIMM_fileElapsed)==xarray_unique_id)
-	{
-		file_elapsed_ts=(double)(getIntParam(NDFileIMM_uniqueID));
-	}
-
-
-
-
-	if (getIntParam(NDFileIMM_fileSysticks)==xcorecoticks)
-	{
-		file_systick_ts=getIntParam(NDFileIMM_grabber_timestamp);
-	}
-	else if (getIntParam(NDFileIMM_fileSysticks)==xfpga_ts)
-	{
-		file_systick_ts=getIntParam(NDFileIMM_fpga_timestamp);
-	}
-	else if (getIntParam(NDFileIMM_fileSysticks)==xarray_timestamp)
-	{
-		file_systick_ts=(int)(getDoubParam(NDFileIMM_timestamp));
-	}
-	else if (getIntParam(NDFileIMM_fileSysticks)==xarray_unique_id)
-	{
+	
 		file_systick_ts=getIntParam(NDFileIMM_uniqueID);
-	}
-
-
-
 
 
 		getIntegerParam(NDFileNumber,&fnx);
@@ -326,26 +271,26 @@ asynStatus NDFileIMM::writeFile(NDArray *pArray)
 
 
 			//for (i=0; i<pArray->ndims; i++)
-			//	dimSizeOut[i] = pArray->dims[i].size;
-			//have to assume as have 2 dims for image.
-			// we add 2000 for the header.. it is act only 1024, but we get extra room...
-		dimSizeOut[0]=(size_t)1;
-		dimSizeOut[1]= this->max_imm_bytes;
-		    my_array = this->pNDArrayPool->alloc(2,dimSizeOut, NDUInt8, (size_t)0, (void*)0);
-             
-          int one = 1;
-                 
-        //add new attr to img, if not already there. if there, it updates values         
-        my_array->pAttributeList->add(
-            "is_already_imm", 
-            "if 1 then this is imm data",
-             NDAttrInt32, 
-             &one);
-             
-         my_array->uniqueId = pArray->uniqueId;
-         my_array->timeStamp= pArray->timeStamp;
-         
-         
+			    //	dimSizeOut[i] = pArray->dims[i].size;
+			    //have to assume as have 2 dims for image.
+			    // we add 2000 for the header.. it is act only 1024, but we get extra room...
+		    dimSizeOut[0]=(size_t)1;
+		    dimSizeOut[1]= this->max_imm_bytes;
+		        my_array = this->pNDArrayPool->alloc(2,dimSizeOut, NDUInt8, (size_t)0, (void*)0);
+
+              int one = 1;
+
+            //add new attr to img, if not already there. if there, it updates values         
+            my_array->pAttributeList->add(
+                "is_already_imm", 
+                "if 1 then this is imm data",
+                 NDAttrInt32, 
+                 &one);
+
+             my_array->uniqueId = pArray->uniqueId;
+             my_array->timeStamp= pArray->timeStamp;
+
+
 			if (my_array==0)
 			{
 				printf("ERROR- IMM plugin could not get NDArray\n");
@@ -390,192 +335,142 @@ asynStatus NDFileIMM::writeFile(NDArray *pArray)
 
     if (is_update==1)
         setIntegerParam(NDFileNumber,fnx+1);
+  
 
 
     }
     else if (fileformat==0)
 	{
-		//printf("saveFileIMMRaw\n");
+		    //printf("saveFileIMMRaw\n");
 		cf->saveFileIMMRaw(
-		 file_coreco_ts,
-	 	file_elapsed_ts,
-	 	file_systick_ts,//timestamp- ise ndarray param
-		threshold,//thresh
-		sizex,
-		sizey,
-		bytesperpix,// bytes per pix-00 need to get this from NDArray... use short for now
-		pArray->pData,
-		this->nextRecord,//fiklenumber- where do we get it?
-		cam_type,// camtype should be a ndarray param
-		acq_time//acq period- do we read the param or use an ndarray param?
-		);
+		     file_coreco_ts,
+	 	    file_elapsed_ts,
+	 	    file_systick_ts,//timestamp- ise ndarray param
+		    threshold,//thresh
+		    sizex,
+		    sizey,
+		    bytesperpix,// bytes per pix-00 need to get this from NDArray... use short for now
+		    pArray->pData,
+		    this->nextRecord,//fiklenumber- where do we get it?
+		    cam_type,// camtype should be a ndarray param
+		    acq_time//acq period- do we read the param or use an ndarray param?
+		    );
 
-		this->nextRecord++;
+		    this->nextRecord++;
 
-		getIntegerParam(NDFileNumber,&fnx);
+		    getIntegerParam(NDFileNumber,&fnx);
+            
+               
+        setIntegerParam(NDFileIMM_is_already_imm,0);
+        setIntegerParam(NDFileIMM_imm_systicks,file_systick_ts);
+        setIntegerParam(NDFileIMM_imm_corecoticks, file_coreco_ts );
+        setIntegerParam(NDFileIMM_imm_dlen,cf->last_nbytes );
+        setDoubleParam(NDFileIMM_imm_elapsed,file_elapsed_ts);
+        
+            
+            
+            
 
-	if (is_update==1)
-		setIntegerParam(NDFileNumber,fnx+1);
-
-
-	 if (is_throw_frame)
-	 {
-		  if (cf->last_nbytes<=my_array->dataSize)
-		  {
-			  memcpy(my_array->pData, cf->last_data, cf->last_nbytes);
-		 //my_array->dims[0].size=cf->last_nbytes;
-		 //my_array->dims[1].size=1;
-		 //my_array->dataType= NDUInt8;
-
-		/* Get the attributes for this driver */
-	    this->getAttributes(my_array->pAttributeList);
+	    if (is_update==1)
+		    setIntegerParam(NDFileNumber,fnx+1);
 
 
-		doCallbacksGenericPointer(my_array, NDArrayData, 0);
-		}
-		else
-		{
-		printf("Error- Could not throw IMM to plugins- not enough mem\n");
-		   setIntegerParam(NDFileWriteStatus, NDFileWriteError);
-		   setStringParam(NDFileWriteMessage, "Error- Could not throw IMM to plugins- not enough mem.");
-		}
-		callParamCallbacks();
+	     if (is_throw_frame)
+	     {
+		      if (cf->last_nbytes<=my_array->dataSize)
+		      {
+			      memcpy(my_array->pData, cf->last_data, cf->last_nbytes);
+		     //my_array->dims[0].size=cf->last_nbytes;
+		     //my_array->dims[1].size=1;
+		     //my_array->dataType= NDUInt8;
+
+		    /* Get the attributes for this driver */
+	        this->getAttributes(my_array->pAttributeList);
 
 
-	 }
+		    doCallbacksGenericPointer(my_array, NDArrayData, 0);
+		    }
+		    else
+		    {
+		    printf("Error- Could not throw IMM to plugins- not enough mem\n");
+		       setIntegerParam(NDFileWriteStatus, NDFileWriteError);
+		       setStringParam(NDFileWriteMessage, "Error- Could not throw IMM to plugins- not enough mem.");
+		    }
+		    callParamCallbacks();
+
+
+	     }
 
 
 
 	}
 	else
 	{
-		if (is_fpga_comp)
-		{
-			// data already compressed by FPGA on grabber
-		//	printf("saveFileFPGACompIMM\n");
-			int kk;
-			bool is_valid_head;
-			int fpga_comp_frames;
+		
+		
+	//	printf("saveFileIMMComp\n");
+		cf->saveFileIMMComp(
+				 file_coreco_ts,
+	 			file_elapsed_ts,
+	 			file_systick_ts,
+				threshold,//thresh
+				sizex,
+				sizey,
+				bytesperpix,// bytes per pix-00 need to get this from NDArray... use short for now
+				pArray->pData,
+				this->nextRecord,//fiklenumber- where do we get it?
+				cam_type,// camtype should be a ndarray param
+				acq_time,//acq period- do we read the param or use an ndarray param?
+				&imm_pixels
+				);
+//			setIntegerParam(NDFileIMM_num_imm_pixels,imm_pixels);
 
-			is_valid_head=cf->fpgaIsValidHeader((unsigned char*)pArray->pData);
-			if (is_valid_head)
+
+
+        setIntegerParam(NDFileIMM_is_already_imm,0);
+        setIntegerParam(NDFileIMM_imm_systicks,file_systick_ts);
+        setIntegerParam(NDFileIMM_imm_corecoticks, file_coreco_ts );
+        setIntegerParam(NDFileIMM_imm_dlen,cf->last_nbytes );
+        setDoubleParam(NDFileIMM_imm_elapsed,file_elapsed_ts);
+        
+
+
+
+		this->nextRecord++;
+	getIntegerParam(NDFileNumber,&fnx);
+		if (is_update==1)
+			setIntegerParam(NDFileNumber,fnx+1);
+
+		 if (is_throw_frame)
+		 {
+			  if (cf->last_nbytes<=my_array->dataSize)
+			  {
+				 memcpy(my_array->pData, cf->last_data, cf->last_nbytes);
+				// my_array->dims[0].size=cf->last_nbytes;
+			 //my_array->dims[1].size=1;
+			// my_array->dataType= NDUInt8;
+
+					/* Get the attributes for this driver */
+					this->getAttributes(my_array->pAttributeList);
+
+
+			doCallbacksGenericPointer(my_array, NDArrayData, 0);		}
+			else
 			{
-				fpga_comp_frames=cf->getFpgaNumFrames(pArray->pData);
+					printf("Error- Could not throw IMM to plugins- not enough mem\n");
+					   setIntegerParam(NDFileWriteStatus, NDFileWriteError);
+					   setStringParam(NDFileWriteMessage, "Error- Could not throw IMM to plugins- not enough mem.");
 
-				for (kk=0;kk<fpga_comp_frames;kk++)
-				{
-					cf->setBufferNumber(this->nextRecord);
+			}
 
-					cf->saveFrameFPGACompIMM(
-						threshold,
-						file_systick_ts,
-						file_elapsed_ts,
-						sizex,
-						sizey,
-						bytesperpix,
-						pArray->pData,
-						this->nextRecord,
-						cam_type,
-						acq_time,
-						kk);
 
-					getIntegerParam(NDFileNumber,&fnx);
-				if (is_update==1)
-					setIntegerParam(NDFileNumber,fnx+1);
+			callParamCallbacks();
 
-					 if (is_throw_frame)
-					 {
-						 if (cf->last_nbytes<=my_array->dataSize)
-						 {
-						 	memcpy(my_array->pData, cf->last_data, cf->last_nbytes);
-						 //my_array->dims[0].size=cf->last_nbytes;
-						 //my_array->dims[1].size=1;
-						// my_array->dataType= NDUInt8;
 
-							/* Get the attributes for this driver */
-						    this->getAttributes(my_array->pAttributeList);
+		 }//if (is_throw_frame)
 
 
 
-						doCallbacksGenericPointer(my_array, NDArrayData, 0);
-					 	 }
-					 	 else
-					 	 {
-						printf("Error- Could not throw IMM to plugins- not enough mem\n");
-						   setIntegerParam(NDFileWriteStatus, NDFileWriteError);
-						   setStringParam(NDFileWriteMessage, "Error- Could not throw IMM to plugins- not enough mem.");
-
-						 }
-
-                        callParamCallbacks();
-
-
-					 }
-					 this->nextRecord ++;
-
-				}//for
-
-				//this->nextRecord += cf->getFpgaNumFrames(pArray->pData);
-
-				if (is_update==1)
-					setIntegerParam(NDFileNumber,fnx+cf->getFpgaNumFrames(pArray->pData));
-
-			}//if vali head
-		}//if save fpga comp
-		else
-		{
-		//	printf("saveFileIMMComp\n");
-			cf->saveFileIMMComp(
-					 file_coreco_ts,
-	 				file_elapsed_ts,
-	 				file_systick_ts,
-					threshold,//thresh
-					sizex,
-					sizey,
-					bytesperpix,// bytes per pix-00 need to get this from NDArray... use short for now
-					pArray->pData,
-					this->nextRecord,//fiklenumber- where do we get it?
-					cam_type,// camtype should be a ndarray param
-					acq_time,//acq period- do we read the param or use an ndarray param?
-					&fpga_pixels
-					);
-//			setIntegerParam(NDFileIMM_num_fpga_pixels,fpga_pixels);
-
-			this->nextRecord++;
-		getIntegerParam(NDFileNumber,&fnx);
-			if (is_update==1)
-				setIntegerParam(NDFileNumber,fnx+1);
-
-			 if (is_throw_frame)
-			 {
-				  if (cf->last_nbytes<=my_array->dataSize)
-				  {
-					 memcpy(my_array->pData, cf->last_data, cf->last_nbytes);
-					// my_array->dims[0].size=cf->last_nbytes;
-				 //my_array->dims[1].size=1;
-				// my_array->dataType= NDUInt8;
-
-						/* Get the attributes for this driver */
-					    this->getAttributes(my_array->pAttributeList);
-
-
-				doCallbacksGenericPointer(my_array, NDArrayData, 0);		}
-				else
-				{
-						printf("Error- Could not throw IMM to plugins- not enough mem\n");
-						   setIntegerParam(NDFileWriteStatus, NDFileWriteError);
-						   setStringParam(NDFileWriteMessage, "Error- Could not throw IMM to plugins- not enough mem.");
-
-				}
-
-
-				callParamCallbacks();
-
-
-			 }
-
-
-		}
 
 	}
 
@@ -605,12 +500,11 @@ void NDFileIMM::processCallbacks(NDArray *pArray)
 	bool is_at_msg;
 	double fr_prd;
 	/*
-	NDFileIMM_is_fpga_comp,
-	NDFileIMM_fpga_timestamp,
-	NDFileIMM_grabber_timestamp,
-	NDFileIMM_num_bad_fpgaheads,
-	NDFileIMM_num_fpga_pixels,
-	NDFileIMM_num_comp_frames,
+
+	,
+	
+	,
+	,
 
 	*/
 
@@ -618,12 +512,12 @@ void NDFileIMM::processCallbacks(NDArray *pArray)
 
 	is_at_msg=false;
 	threshold = 0;
-	is_fpga_comp = 0;
+	is_imm_comp = 0;
 	acq_time = 0.0;
-	corecoticks=0;
+
     is_already_imm=0;
     pipe_num_shorts=0;
-// dbgf "SimMaddog:IMM:NDFileIMM_grabber_timestamp_RBV"
+
 // dbpf "SimMaddog:IMM:EnableCallbacks","Enable"
 
 	getIntegerParam(NDFileIMM_threshold,&threshold);
@@ -670,12 +564,7 @@ void NDFileIMM::processCallbacks(NDArray *pArray)
 	timestamp_reset_counter++;
 	last_timestamp=general_timestamp;
 
-	// we keep lowest 31 bits.
-	// there are 52 bits of decimals, so we get rid of 52-31 = 21 bits
-	//corecoticks = (unsigned int) (pow(2.0,21.0) *
-	//(general_timestamp/pow(2.0,21.0) - floor(general_timestamp/pow(2.0,21.0))));
-	//corecoticks=(unsigned int)general_timestamp;
-	corecoticks=0;
+	
 	numAttributes = pArray->pAttributeList->count();
 
 //	printf("Num Attributes %i \n", numAttributes);
@@ -695,7 +584,6 @@ void NDFileIMM::processCallbacks(NDArray *pArray)
 		//pAttribute->getValue(attrDataType, void *pValue, attrSize);
 
 		// imm_threshold
-		// imm_fpga_compressed
 		// imm_acq_time
 		// imm_coreco_ticks
 
@@ -707,20 +595,6 @@ void NDFileIMM::processCallbacks(NDArray *pArray)
 		}
 
 
-		//printf("Attr: %s  Desc: %s \n",name, description);
-		if (strcmp(name,"imm_fpga_compressed")==0)
-		{
-			pAttribute->getValue(attrDataType, (void*)&is_fpga_comp, attrSize);
-		//	is_coreco_timestamp=true;
-			if (is_at_msg)
-				printf("imm_fpga_compressed = %i\n", is_fpga_comp);
-		}
-		if (strcmp(name,"imm_camera_type")==0)
-		{
-			pAttribute->getValue(attrDataType, (void*)&cam_type, attrSize);
-			if (is_at_msg)
-				printf("imm_camera_type = %i\n", cam_type);
-		}
 
 		if (strcmp(name,"imm_threshold")==0)
 		{
@@ -729,12 +603,7 @@ void NDFileIMM::processCallbacks(NDArray *pArray)
 				printf("imm_threshold = %i\n", threshold);
 		}
 
-		if (strcmp(name,"imm_acq_time")==0)
-		{
-			pAttribute->getValue(attrDataType, (void*)&acq_time, attrSize);
-			if (is_at_msg)
-				printf("imm_acq_time = %f\n", acq_time);
-		}
+	
 
         if (strcmp(name,"is_already_imm")==0)
         {
@@ -742,93 +611,58 @@ void NDFileIMM::processCallbacks(NDArray *pArray)
             if (is_at_msg)
                 printf("is_already_imm = %d\n", is_already_imm);
         }
-        if (strcmp(name,"num_pixels")==0)
-        {
-            pAttribute->getValue(attrDataType, (void*)&pipe_num_shorts, attrSize);
-            if (is_at_msg)
-                printf("pipe_num_shorts = %f\n", pipe_num_shorts);
-        }
+     
 
 
-
-		if (strcmp(name,"imm_coreco_ticks")==0)
-		{
-			pAttribute->getValue(attrDataType, (void*)&corecoticks, attrSize);
-				//setDoubleParam(NDFileIMM_timestamp,(double)corecoticks);
-
-				//is_coreco_timestamp=true;
-
-			if (is_at_msg)
-				printf("imm_coreco_ticks = %i\n", corecoticks);
-		}
 	        pAttribute = pArray->pAttributeList->next(pAttribute);
 		// pAttribute = pArray->nextAttribute(pAttribute);
 
 	}
 
-	setIntegerParam(NDFileIMM_is_fpga_comp,is_fpga_comp);
+	setIntegerParam(NDFileIMM_is_imm_comp,is_imm_comp);
         setIntegerParam(NDFileIMM_threshold,threshold);
-	setIntegerParam(NDFileIMM_grabber_timestamp,corecoticks);
+	
 
 
-	fpga_timestamp=0;
-	fpga_pixels=0;
-	fpga_comp_frames=0;
+	imm_pixels=0;
 
 
     if (is_already_imm)
     {
         compressed_header *immh = (compressed_header*)(pArray->pData);
-        corecoticks=immh->corecotick;
+        //corecoticks=immh->corecotick;
         //setIntegerParam(NDFileIMM_fileSysticks,immh->systick);
         //setIntegerParam(NDFileIMM_fileElapsed,immh->elapsed);
-        fpga_timestamp=immh->systick;
-        setIntegerParam(NDFileIMM_fileCorecoticks,xfpga_ts);
-        setIntegerParam(NDFileIMM_fileSysticks,xcorecoticks);
-        setIntegerParam(NDFileIMM_fileElapsed,xarray_timestamp);
-
-        fpga_comp_frames=1;
+     
+      
         if (immh->compression!=0)
-            setIntegerParam(NDFileIMM_is_fpga_comp,1);
+            setIntegerParam(NDFileIMM_is_imm_comp,1);
         else
-            setIntegerParam(NDFileIMM_is_fpga_comp,0);
+            setIntegerParam(NDFileIMM_is_imm_comp,0);
 
-        fpga_pixels=immh->dlen;
+        imm_pixels=immh->dlen;
+        
+        
+              
+        setIntegerParam(NDFileIMM_is_already_imm,1);
+        setIntegerParam(NDFileIMM_imm_systicks,immh->systick);
+        setIntegerParam(NDFileIMM_imm_corecoticks, immh->corecotick );
+        setIntegerParam(NDFileIMM_imm_dlen,immh->dlen );
+        setDoubleParam(NDFileIMM_imm_elapsed,immh->elapsed);
+        
+        
+        
     }
+   
 
+	
 
-	if (is_fpga_comp)
-	{
-		is_valid_head=cf->fpgaIsValidHeader((unsigned char*)pArray->pData);
-		if (!is_valid_head)
-			num_bad_fpgaheads++;
-		else
-		{
-			fpga_comp_frames=cf->getFpgaNumFrames(pArray->pData);
-			fpga_header=cf->getFpgaHeadAddr((unsigned char*)pArray->pData,0);
-
-			fpga_pixels=cf->numFpgaPixRec(fpga_header);
-			fpga_timestamp=cf->getFpgaUsTimeStamp32(fpga_header,2147483647);
-			//setDoubleParam(NDFileIMM_timestamp,(double)fpga_timestamp);
-			setIntegerParam(NDFileIMM_fileCorecoticks,xfpga_ts);
-			setIntegerParam(NDFileIMM_fileSysticks,xcorecoticks);
-			setIntegerParam(NDFileIMM_fileElapsed,xarray_timestamp);
-
-
-
-		}
-
-
-	}
-
-	// check for bad FPGA headers, get stats etc...
+	
 	// call base class function...
 	NDPluginFile::processCallbacks(pArray);
 
-	setIntegerParam(NDFileIMM_fpga_timestamp,fpga_timestamp);
-	setIntegerParam(NDFileIMM_num_fpga_pixels,fpga_pixels);
-	setIntegerParam(NDFileIMM_num_comp_frames,fpga_comp_frames);
-	setIntegerParam(NDFileIMM_num_bad_fpgaheads,num_bad_fpgaheads);
+	setIntegerParam(NDFileIMM_num_imm_pixels,imm_pixels);
+	
 
     callParamCallbacks();
 }
@@ -1142,27 +976,33 @@ NDFileIMM::NDFileIMM(const char *portName,int max_imm_bytes ,int queueSize, int 
 	is_open_good=true;
 
 		paramStrings[0]=new param_type_str(&NDFileIMM_threshold,asynParamInt32,"NDFileIMM_threshold");
-		paramStrings[1]=new param_type_str(&NDFileIMM_is_fpga_comp,asynParamInt32, "NDFileIMM_is_fpga_comp");
-		paramStrings[2]=new param_type_str(&NDFileIMM_fpga_timestamp,asynParamInt32,"NDFileIMM_fpga_timestamp");
-		paramStrings[3]=new param_type_str(&NDFileIMM_grabber_timestamp,asynParamInt32,"NDFileIMM_grabber_timestamp");
-		paramStrings[4]=new param_type_str(&NDFileIMM_num_bad_fpgaheads,asynParamInt32,"NDFileIMM_num_bad_fpgaheads");
-		paramStrings[5]=new param_type_str(&NDFileIMM_num_fpga_pixels,asynParamInt32,"NDFileIMM_num_fpga_pixels");
-		paramStrings[6]=new param_type_str(&NDFileIMM_num_comp_frames,asynParamInt32,"NDFileIMM_num_comp_frames");
-		paramStrings[7]=new param_type_str(&NDFileIMM_timestamp,asynParamFloat64,"NDFileIMM_timestamp");
-		paramStrings[8]=new param_type_str(&NDFileIMM_uniqueID,asynParamInt32,"NDFileIMM_uniqueID");
-		paramStrings[9]=new param_type_str(&NDFileIMM_fileCorecoticks,asynParamInt32,"NDFileIMM_fileCorecoticks");
-		paramStrings[10]=new param_type_str(&NDFileIMM_fileSysticks,asynParamInt32,"NDFileIMM_fileSysticks");
-		paramStrings[11]=new param_type_str(&NDFileIMM_fileElapsed,asynParamInt32,"NDFileIMM_fileElapsed");
-		paramStrings[12]=new param_type_str(&NDFileIMM_printAttributes,asynParamInt32,"NDFileIMM_printAttributes");
-		paramStrings[13]=new param_type_str(&NDFileIMM_NmissedTimeStamps,asynParamInt32,"NDFileIMM_NmissedTimeStamps");
-		paramStrings[14]=new param_type_str(&NDFileIMM_framePeriod,asynParamFloat64,"NDFileIMM_framePeriod");
-		paramStrings[15]=new param_type_str(&NDFileIMM_NmissedIDs,asynParamInt32,"NDFileIMM_NmissedIDs");
+		paramStrings[1]=new param_type_str(&NDFileIMM_is_imm_comp,asynParamInt32, "NDFileIMM_is_imm_comp");
+		paramStrings[2]=new param_type_str(&NDFileIMM_num_imm_pixels,asynParamInt32,"NDFileIMM_num_imm_pixels");
+		paramStrings[3]=new param_type_str(&NDFileIMM_timestamp,asynParamFloat64,"NDFileIMM_timestamp");
+		paramStrings[4]=new param_type_str(&NDFileIMM_uniqueID,asynParamInt32,"NDFileIMM_uniqueID");
+		paramStrings[5]=new param_type_str(&NDFileIMM_printAttributes,asynParamInt32,"NDFileIMM_printAttributes");
+		paramStrings[6]=new param_type_str(&NDFileIMM_NmissedTimeStamps,asynParamInt32,"NDFileIMM_NmissedTimeStamps");
+		paramStrings[7]=new param_type_str(&NDFileIMM_framePeriod,asynParamFloat64,"NDFileIMM_framePeriod");
+		paramStrings[8]=new param_type_str(&NDFileIMM_NmissedIDs,asynParamInt32,"NDFileIMM_NmissedIDs");
 
-		paramStrings[16]=new param_type_str(&NDFileIMM_Nimg_rst_ts,asynParamInt32,"NDFileIMM_Nimg_rst_ts");
-		paramStrings[17]=new param_type_str(&NDFileIMM_throw_images,asynParamInt32,"NDFileIMM_throw_images");
+		paramStrings[9]=new param_type_str(&NDFileIMM_Nimg_rst_ts,asynParamInt32,"NDFileIMM_Nimg_rst_ts");
+		paramStrings[10]=new param_type_str(&NDFileIMM_throw_images,asynParamInt32,"NDFileIMM_throw_images");
 
-paramStrings[18]=new param_type_str(&NDFileIMM_fileevent,asynParamInt32,"NDFileIMM_fileevent");
+        paramStrings[11]=new param_type_str(&NDFileIMM_fileevent,asynParamInt32,"NDFileIMM_fileevent");
 
+
+         paramStrings[12]=new param_type_str(&NDFileIMM_is_already_imm ,asynParamInt32,"NDFileIMM_is_already_imm");
+         paramStrings[13]=new param_type_str(&NDFileIMM_imm_systicks   ,asynParamInt32,"NDFileIMM_imm_systicks");
+         paramStrings[14]=new param_type_str(&NDFileIMM_imm_corecoticks,asynParamInt32,"NDFileIMM_imm_corecoticks");
+         paramStrings[15]=new param_type_str(&NDFileIMM_imm_elapsed    ,asynParamFloat64,"NDFileIMM_imm_elapsed");
+         paramStrings[16]=new param_type_str(&NDFileIMM_imm_dlen       ,asynParamInt32,"NDFileIMM_imm_dlen");
+
+
+        setIntegerParam(NDFileIMM_is_already_imm , 0);
+        setIntegerParam(NDFileIMM_imm_systicks   , 0);
+        setIntegerParam(NDFileIMM_imm_corecoticks, 0);
+        setDoubleParam(NDFileIMM_imm_elapsed    ,0 );
+        setIntegerParam(NDFileIMM_imm_dlen       , 0);
 
 
     this->supportsMultipleArrays = 1;
@@ -1187,7 +1027,6 @@ paramStrings[18]=new param_type_str(&NDFileIMM_fileevent,asynParamInt32,"NDFileI
 
 		setIntegerParam(NDFileIMM_threshold, 0);
 
-		num_bad_fpgaheads=0;
 		last_filenumber=0;
 
 		is_coreco_timestamp=false;
@@ -1195,9 +1034,6 @@ paramStrings[18]=new param_type_str(&NDFileIMM_fileevent,asynParamInt32,"NDFileI
 
 
 
-			setIntegerParam(NDFileIMM_fileCorecoticks,xcorecoticks);
-			setIntegerParam(NDFileIMM_fileSysticks,xarray_unique_id);
-			setIntegerParam(NDFileIMM_fileElapsed,xarray_timestamp);
 			setIntegerParam(NDFileIMM_printAttributes,0);
 
 			setIntegerParam(NDFileWriteMode,NDFileModeStream);
