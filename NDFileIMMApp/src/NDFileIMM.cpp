@@ -359,13 +359,13 @@ asynStatus NDFileIMM::writeFile(NDArray *pArray)
 		    this->nextRecord++;
 
 		    getIntegerParam(NDFileNumber,&fnx);
-            
+            compressed_header *immh = (compressed_header*)(cf->last_data);
                
         setIntegerParam(NDFileIMM_is_already_imm,0);
-        setIntegerParam(NDFileIMM_imm_systicks,file_systick_ts);
-        setIntegerParam(NDFileIMM_imm_corecoticks, file_coreco_ts );
-        setIntegerParam(NDFileIMM_imm_dlen,cf->last_nbytes );
-        setDoubleParam(NDFileIMM_imm_elapsed,file_elapsed_ts);
+        setIntegerParam(NDFileIMM_imm_systicks,immh->systick);
+        setIntegerParam(NDFileIMM_imm_corecoticks, immh->corecotick );
+        setIntegerParam(NDFileIMM_imm_dlen,immh->dlen );
+        setDoubleParam(NDFileIMM_imm_elapsed,immh->elapsed);
         
             
             
@@ -425,14 +425,16 @@ asynStatus NDFileIMM::writeFile(NDArray *pArray)
 				);
 //			setIntegerParam(NDFileIMM_num_imm_pixels,imm_pixels);
 
-
-
-        setIntegerParam(NDFileIMM_is_already_imm,0);
-        setIntegerParam(NDFileIMM_imm_systicks,file_systick_ts);
-        setIntegerParam(NDFileIMM_imm_corecoticks, file_coreco_ts );
-        setIntegerParam(NDFileIMM_imm_dlen,cf->last_nbytes );
-        setDoubleParam(NDFileIMM_imm_elapsed,file_elapsed_ts);
         
+    compressed_header *immh = (compressed_header*)(cf->last_data);
+               
+        setIntegerParam(NDFileIMM_is_already_imm,0);
+        setIntegerParam(NDFileIMM_imm_systicks,immh->systick);
+        setIntegerParam(NDFileIMM_imm_corecoticks, immh->corecotick );
+        setIntegerParam(NDFileIMM_imm_dlen,immh->dlen );
+        setDoubleParam(NDFileIMM_imm_elapsed,immh->elapsed);
+        
+      
 
 
 
