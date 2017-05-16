@@ -23,6 +23,7 @@
 #include "compressed_file2.h"
 #include "image_file2.h"
 #include "asynNDArrayDriver.h"
+#include <ADCoreVersion.h>
 
 #ifdef _WIN32
 #include <io.h>
@@ -359,13 +360,13 @@ asynStatus NDFileIMM::writeFile(NDArray *pArray)
 		    this->nextRecord++;
 
 		    getIntegerParam(NDFileNumber,&fnx);
-            
+            compressed_header *immh = (compressed_header*)(cf->last_data);
                
         setIntegerParam(NDFileIMM_is_already_imm,0);
-        setIntegerParam(NDFileIMM_imm_systicks,file_systick_ts);
-        setIntegerParam(NDFileIMM_imm_corecoticks, file_coreco_ts );
-        setIntegerParam(NDFileIMM_imm_dlen,cf->last_nbytes );
-        setDoubleParam(NDFileIMM_imm_elapsed,file_elapsed_ts);
+        setIntegerParam(NDFileIMM_imm_systicks,immh->systick);
+        setIntegerParam(NDFileIMM_imm_corecoticks, immh->corecotick );
+        setIntegerParam(NDFileIMM_imm_dlen,immh->dlen );
+        setDoubleParam(NDFileIMM_imm_elapsed,immh->elapsed);
         
             
             
@@ -425,14 +426,16 @@ asynStatus NDFileIMM::writeFile(NDArray *pArray)
 				);
 //			setIntegerParam(NDFileIMM_num_imm_pixels,imm_pixels);
 
-
-
-        setIntegerParam(NDFileIMM_is_already_imm,0);
-        setIntegerParam(NDFileIMM_imm_systicks,file_systick_ts);
-        setIntegerParam(NDFileIMM_imm_corecoticks, file_coreco_ts );
-        setIntegerParam(NDFileIMM_imm_dlen,cf->last_nbytes );
-        setDoubleParam(NDFileIMM_imm_elapsed,file_elapsed_ts);
         
+    compressed_header *immh = (compressed_header*)(cf->last_data);
+               
+        setIntegerParam(NDFileIMM_is_already_imm,0);
+        setIntegerParam(NDFileIMM_imm_systicks,immh->systick);
+        setIntegerParam(NDFileIMM_imm_corecoticks, immh->corecotick );
+        setIntegerParam(NDFileIMM_imm_dlen,immh->dlen );
+        setDoubleParam(NDFileIMM_imm_elapsed,immh->elapsed);
+        
+      
 
 
 
@@ -959,6 +962,7 @@ extern "C" {
 
 /* The constructor for this class */
 //max_imm_bytes is size of NDArray thrown, 1 x IMMLength bytes
+#if ADCORE_VERSION>2
 NDFileIMM::NDFileIMM(const char *portName,int max_imm_bytes ,int queueSize, int blockingCallbacks,
                        const char *NDArrayPort, int NDArrayAddr,
                        int priority, int stackSize) :
@@ -967,8 +971,15 @@ NDFileIMM::NDFileIMM(const char *portName,int max_imm_bytes ,int queueSize, int 
                    500, 0, asynGenericPointerMask, asynGenericPointerMask,
                    ASYN_CANBLOCK, 1, priority, stackSize,10)
 
-
-
+#else
+NDFileIMM::NDFileIMM(const char *portName,int max_imm_bytes ,int queueSize, int blockingCallbacks,
+                       const char *NDArrayPort, int NDArrayAddr,
+                       int priority, int stackSize) :
+     NDPluginFile(portName, queueSize, blockingCallbacks,
+                   NDArrayPort, NDArrayAddr, 1, num_params,
+                   500, 0, asynGenericPointerMask, asynGenericPointerMask,
+                   ASYN_CANBLOCK, 1, priority, stackSize)
+#endif
 {
 	int i;
 

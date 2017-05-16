@@ -487,7 +487,8 @@ void compressed_file::rawToIMM(
 
 
 
-	IMM_header->dlen = num_pixels;
+    IMM_header->dlen = raw_x_pixels * raw_y_pixels;
+
 	// calculate the size of the new compressde image in bytes
 	*IMM_bytes = compressed_header::header_size;
 	*IMM_bytes = *IMM_bytes + raw_bytes;

@@ -60,8 +60,8 @@ import struct
 
 
 #comment these ouit of not drawing images, but only reading headers"
-#import numpy as np
-#import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 
