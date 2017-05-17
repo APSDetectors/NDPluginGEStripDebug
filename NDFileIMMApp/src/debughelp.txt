@@ -1,0 +1,27 @@
+caput 13SIM1:cam1:AcquireTime 0.5
+caput 13SIM1:cam1:Acquire 1
+
+caput 13SIM1:IMM:EnableCallbacks 1
+caput 13SIM1:IMM:NumCapture -1
+caput 13SIM1:IMM:FileName "NULL"
+caput 13SIM1:IMM:Capture 1
+caput 13SIM1:IMM:FileFormat 1
+caput 13SIM1:cam1:SimMode 1
+caput 13SIM1:cam1:PeakStartX 100
+caput 13SIM1:cam1:PeakStartY 100
+caput 13SIM1:cam1:PeakWidthX 100
+caput 13SIM1:cam1:PeakWidthY 100
+caput 13SIM1:cam1:PeakVariation 20
+caput 13SIM1:cam1:Noise 20
+
+caput 13SIM1:IMM:NDFileIMM_printAttributes 1
+caput 13SIM1:IMM2:NDFileIMM_printAttributes 1
+
+490	IMM_header->dlen = raw_x_pixels * raw_y_pixels;
+
+
+caput 
+caput 
+caput 
+
+
