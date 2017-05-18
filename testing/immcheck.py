@@ -1,12 +1,15 @@
 
 """
-iname = '/home/beams/TMADDEN/EPICS/ADEpics/synApps_5_5/support/areaDetector-R2-5/ADSimDetector/iocs/simDetectorIOC/iocBoot/iocSimDetector/maddog_00000-00009.imm'
+
+iname = '/home/beams0/TMADDEN/EPICS/ADEpics/synApps_5_5/support/areaDetector-R3-0/ADSimDetector/iocs/simDetectorIOC/iocBoot/iocSimDetector/maddog_00000-00009.imm'
+
+
 #How to use
 #run ipython
 
 execfile('immcheck.py')
 
-iname = '/local/testa_00200-01199.imm'
+iname = '
 checkFile(iname)
 
 #to read headers of images
@@ -131,9 +134,8 @@ imm_fieldnames = [
 
 
 
-iname = '/local/testa_00200-01199.imm'
 
-def checkFile(fname):
+def checkFile(fname,is_image=False):
     fp = open(fname,'rb')
 
     lastcor=-1
@@ -144,8 +146,12 @@ def checkFile(fname):
     while True:
         h = readHeader(fp)
         if h!='eof':
+            print '_________________________________________'
             print 'buffer number %d'%h['buffer_number']
             print 'corecotick %d'%h['corecotick']
+            print 'elapsed %f'%h['elapsed']
+            print 'systick %f'%h['systick']
+
 
             if lastbn==-1: lastbn = h['buffer_number']-1
             if lastcor==-1: lastcor = h['corecotick']-1
@@ -161,7 +167,15 @@ def checkFile(fname):
             lastbn = h['buffer_number']
             lastcor = h['corecotick']
 
-            getNextHeaderPos(fp,h)
+        
+            if is_image:
+                img = getImage(fp,h)
+                figimage(img)
+
+            else:
+                getNextHeaderPos(fp,h)
+    
+    
         else: break
 
     print "Skipped Buffer numbers %d"%n_bnerror
