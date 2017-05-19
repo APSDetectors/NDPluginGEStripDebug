@@ -1,13 +1,36 @@
 
 """
-iname = '/home/beams/TMADDEN/EPICS/ADEpics/synApps_5_5/support/areaDetector-R2-5/ADSimDetector/iocs/simDetectorIOC/iocBoot/iocSimDetector/maddog_00000-00009.imm'
+
+iname = '/local/maddog_00000-00999.imm'
+
+
 #How to use
 #run ipython
 
 execfile('immcheck.py')
 
-iname = '/local/testa_00200-01199.imm'
 checkFile(iname)
+
+
+checkFile(iname,is_plot=True)
+
+
+checkFile(iname,is_image=True)
+
+checkFile(iname)
+
+
+P='13SIM1:'
+Rlist = ['IMM:','IMM2:','IMM3:']
+
+CaMultiPut(P,Rlist,'Capture',1)
+
+CaMultiPut(P,Rlist,'Capture',0)
+
+CaMultiPut(P,Rlist,'FileFormat',0)
+
+CaMultiPut(P,Rlist,'FileFormat',1)
+
 
 #to read headers of images
 
@@ -62,6 +85,10 @@ import struct
 #comment these ouit of not drawing images, but only reading headers"
 import numpy as np
 import matplotlib.pyplot as plt
+import epics
+
+
+
 
 
 
@@ -131,9 +158,8 @@ imm_fieldnames = [
 
 
 
-iname = '/local/testa_00200-01199.imm'
 
-def checkFile(fname):
+def checkFile(fname,is_image=False,is_plot=False):
     fp = open(fname,'rb')
 
     lastcor=-1
@@ -141,11 +167,29 @@ def checkFile(fname):
     n_corerror = 0
     n_bnerror = 0
 
+    systicks=[]
+    elapseds = []
+    buffer_numbers = []
+    corecoticks = []
+    
     while True:
         h = readHeader(fp)
         if h!='eof':
+            print '_________________________________________'
             print 'buffer number %d'%h['buffer_number']
             print 'corecotick %d'%h['corecotick']
+            print 'elapsed %f'%h['elapsed']
+            print 'systick %f'%h['systick']
+            print 'dlen %f'%h['dlen']
+            print 'bytes %f'%h['bytes']
+            print 'compression %f'%h['compression']
+
+            systicks.append(h['systick'])
+            elapseds.append(h['elapsed'])
+            buffer_numbers.append(h['buffer_number'])
+            corecoticks.append(h['corecotick'])
+            
+            
 
             if lastbn==-1: lastbn = h['buffer_number']-1
             if lastcor==-1: lastcor = h['corecotick']-1
@@ -161,13 +205,65 @@ def checkFile(fname):
             lastbn = h['buffer_number']
             lastcor = h['corecotick']
 
-            getNextHeaderPos(fp,h)
+        
+            if is_image:
+                img = getImage(fp,h)
+                figure(1)
+                clf()
+                ion()
+                figimage(img)
+                pause(0.001)
+
+            else:
+                getNextHeaderPos(fp,h)
+    
+    
         else: break
 
     print "Skipped Buffer numbers %d"%n_bnerror
     print "Skipped Corecoticks %d"%n_corerror
 
     fp.close()
+
+    if is_plot:
+        figure(2)
+        clf()
+        subplot(4,1,1)
+        plot(systicks)
+       
+        
+        subplot(4,1,2)
+        plot(elapseds)
+      
+
+        subplot(4,1,3)
+        plot(buffer_numbers)
+       
+
+        subplot(4,1,4)
+        plot(corecoticks)
+      
+        
+        
+        figure(3)
+        clf()
+        subplot(4,1,1)
+       
+        plot(diff(systicks))
+        
+        subplot(4,1,2)
+      
+        plot(diff(elapseds))
+
+        subplot(4,1,3)
+       
+        plot(diff(buffer_numbers))
+
+        subplot(4,1,4)
+       
+        plot(diff(corecoticks))
+        
+    
 
 def readHeader(fp):
     bindata = fp.read(1024)
@@ -183,10 +279,12 @@ def readHeader(fp):
 
 def getNextHeaderPos(fp,header):
     dlen = header['dlen']
+    bytes = header['bytes']
+    
     if header['compression']==6:
-        fp.seek(dlen*6,1)
+        fp.seek((dlen*4) + (dlen*bytes),1)
     else:
-        fp.seek(dlen*2,1)
+        fp.seek(dlen*bytes,1)
 
 
 
@@ -201,8 +299,13 @@ def getImage(fp,h):
         loc_b = fp.read(4*dlen)
         pixloc = struct.unpack('%di'%dlen,loc_b)
 
-        val_b = fp.read(2*dlen)
-        pixval = struct.unpack('%dH'%dlen,val_b)
+        if h['bytes']==2:
+            val_b = fp.read(2*dlen)
+            pixval = struct.unpack('%dH'%dlen,val_b)
+
+        if h['bytes']==1:
+            val_b = fp.read(1*dlen)
+            pixval = struct.unpack('%dB'%dlen,val_b)
 
         imgdata = np.array( [0] * (h['rows'] * h['cols']))
 
@@ -210,8 +313,13 @@ def getImage(fp,h):
             imgdata[ pixloc[k] ] = pixval[k]
 
     else:
-        pixdat=fp.read(2*dlen)
-        pixvals=struct.unpack('%dH'%dlen,pixdat)
+        pixdat=fp.read(h['bytes']*dlen)
+        if h['bytes']==2:       
+            pixvals=struct.unpack('%dH'%dlen,pixdat)
+    
+        if h['bytes']==1:        
+            pixvals=struct.unpack('%dB'%dlen,pixdat)
+
         imgdata=np.array(pixvals)
 
 
@@ -222,4 +330,14 @@ def getImage(fp,h):
 
 
 
+# CaMultiPut(P,Rlist,'Capture',1)
+# CaMultiPut(P,Rlist,'FileFormat',0)
+
+def CaMultiPut(P,Rlist,Pname, val):
+    for R in Rlist:
+        PV = P + R + Pname
+        epics.caput(PV,val)
+        
+        
+        
 

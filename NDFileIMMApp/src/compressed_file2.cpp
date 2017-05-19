@@ -998,7 +998,7 @@ void compressed_file::saveFileIMMRaw(
 	rawToIMM(
 		(unsigned char*)imgdata,
 		bytes_per_pix*sizex*sizey,
-		2,
+		bytes_per_pix,
 		sizex,
 		sizey,
 		comp_threshold,
@@ -1082,7 +1082,7 @@ void compressed_file::saveFileIMMComp(
 	rawToCompIMM(
 		(unsigned char*)imgdata,
 		bytes_per_pix*sizex*sizey,
-		2,
+		bytes_per_pix,
 		sizex,
 		sizey,
 		comp_threshold,
@@ -1167,7 +1167,7 @@ void compressed_file::saveFileIMMComp(
 	rawToCompIMM(
 		(unsigned char*)imgdata,
 		bytes_per_pix*sizex*sizey,
-		2,
+		bytes_per_pix,
 		sizex,
 		sizey,
 		comp_threshold,
