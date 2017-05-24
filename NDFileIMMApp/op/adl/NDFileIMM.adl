@@ -809,23 +809,6 @@ rectangle {
 		fill="outline"
 	}
 }
-"text update" {
-	object {
-		x=164
-		y=567
-		width=142
-		height=20
-	}
-	monitor {
-		chan="$(P)$(R)NDFileIMM_ERROR_RBV"
-		clr=14
-		bclr=4
-	}
-	align="horiz. right"
-	format="string"
-	limits {
-	}
-}
 text {
 	object {
 		x=327
@@ -931,19 +914,6 @@ text {
 	format="string"
 	limits {
 	}
-}
-text {
-	object {
-		x=15
-		y=568
-		width=140
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="ERROR"
-	align="horiz. right"
 }
 text {
 	object {
