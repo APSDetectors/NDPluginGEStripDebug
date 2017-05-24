@@ -16,7 +16,6 @@ include "NDPluginBase.template"
 
 record(ai, "$(P)$(R)NDFileIMM_imm_elapsed_RBV")
 {
-   field(PINI, "1")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDFileIMM_imm_elapsed")
    field(PREC, "3")
@@ -79,7 +78,6 @@ record(longin, "$(P)$(R)NDFileIMM_threshold_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDFileIMM_threshold")
     field(SCAN, "I/O Intr")
-    field(FLNK, "$(P)$(R)FileNumber_Sync")
 }
 
 
@@ -90,7 +88,6 @@ record(longin, "$(P)$(R)NDFileIMM_is_imm_comp_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDFileIMM_is_imm_comp")
     field(SCAN, "I/O Intr")
-    field(FLNK, "$(P)$(R)FileNumber_Sync")
 }
 
 
@@ -98,7 +95,6 @@ record(longin, "$(P)$(R)NDFileIMM_is_imm_comp_RBV")
 
 record(ai, "$(P)$(R)NDFileIMM_timestamp_RBV")
 {
-   field(PINI, "1")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDFileIMM_timestamp")
    field(PREC, "3")
@@ -112,7 +108,6 @@ record(longin, "$(P)$(R)NDFileIMM_num_imm_pixels_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDFileIMM_num_imm_pixels")
     field(SCAN, "I/O Intr")
-    field(FLNK, "$(P)$(R)FileNumber_Sync")
 }
 
 
@@ -126,7 +121,6 @@ record(longin, "$(P)$(R)NDFileIMM_num_imm_pixels_RBV")
 # File data format 
 record(mbbo, "$(P)$(R)NDFileIMM_format")
 {
-    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDFileIMM_format")
     field(VAL,  "0")
@@ -138,7 +132,6 @@ record(mbbo, "$(P)$(R)NDFileIMM_format")
 
 record(mbbi, "$(P)$(R)NDFileIMM_format_RBV")
 {
-    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDFileIMM_format")
     field(ZRST, "IMM_Raw")
@@ -154,13 +147,6 @@ record(mbbi, "$(P)$(R)NDFileIMM_format_RBV")
 
 
 
-record(longin, "$(P)$(R)NDFileIMM_ERROR_RBV")
-{
-    field(PINI, "1")
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDFileIMM_ERROR")
-    field(SCAN, "I/O Intr")
-}
 
 
 
@@ -168,7 +154,6 @@ record(longin, "$(P)$(R)NDFileIMM_ERROR_RBV")
 
 record(longin, "$(P)$(R)NDFileIMM_uniqueID_RBV")
 {
-    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDFileIMM_uniqueID")
     field(SCAN, "I/O Intr")
@@ -176,109 +161,6 @@ record(longin, "$(P)$(R)NDFileIMM_uniqueID_RBV")
 
 
 
-
-
-# File save mode 
-record(mbbo, "$(P)$(R)NDFileIMM_fileCorecoticks")
-{
-    field(PINI, "1")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDFileIMM_fileCorecoticks")
-    field(VAL,  "0")
-    field(ZRST, "Grabber Stamp")
-    field(ZRVL, "0")
-    field(ONST, "FPGA Stamp")
-    field(ONVL, "1")
-    field(TWST, "Array Stamp")
-    field(TWVL, "2")
-    field(THST, "UniqueID")
-    field(THVL, "3")
-}
-
-record(mbbi, "$(P)$(R)NDFileIMM_fileCorecoticks_RBV")
-{
-    field(PINI, "1")
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDFileIMM_fileCorecoticks")
-   field(ZRST, "Grabber Stamp")
-    field(ZRVL, "0")
-    field(ONST, "FPGA Stamp")
-    field(ONVL, "1")
-    field(TWST, "Array Stamp")
-    field(TWVL, "2")
-    field(THST, "UniqueID")
-    field(THVL, "3")
-    field(SCAN, "I/O Intr")
-}
-
-
-
-# File save mode 
-record(mbbo, "$(P)$(R)NDFileIMM_fileSysticks")
-{
-    field(PINI, "1")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDFileIMM_fileSysticks")
-    field(VAL,  "0")
-    field(ZRST, "Grabber Stamp")
-    field(ZRVL, "0")
-    field(ONST, "FPGA Stamp")
-    field(ONVL, "1")
-    field(TWST, "Array Stamp")
-    field(TWVL, "2")
-    field(THST, "UniqueID")
-    field(THVL, "3")
-}
-
-record(mbbi, "$(P)$(R)NDFileIMM_fileSysticks_RBV")
-{
-    field(PINI, "1")
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDFileIMM_fileSysticks")
-   field(ZRST, "Grabber Stamp")
-    field(ZRVL, "0")
-    field(ONST, "FPGA Stamp")
-    field(ONVL, "1")
-    field(TWST, "Array Stamp")
-    field(TWVL, "2")
-    field(THST, "UniqueID")
-    field(THVL, "3")
-    field(SCAN, "I/O Intr")
-}
-
-
-# File save mode 
-record(mbbo, "$(P)$(R)NDFileIMM_fileElapsed")
-{
-    field(PINI, "1")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDFileIMM_fileElapsed")
-    field(VAL,  "0")
-    field(ZRST, "Grabber Stamp")
-    field(ZRVL, "0")
-    field(ONST, "FPGA Stamp")
-    field(ONVL, "1")
-    field(TWST, "Array Stamp")
-    field(TWVL, "2")
-    field(THST, "UniqueID")
-    field(THVL, "3")
-}
-
-record(mbbi, "$(P)$(R)NDFileIMM_fileElapsed_RBV")
-{
-    field(PINI, "1")
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDFileIMM_fileElapsed")
-   field(ZRST, "Grabber Stamp")
-    field(ZRVL, "0")
-    field(ONST, "FPGA Stamp")
-    field(ONVL, "1")
-    field(TWST, "Array Stamp")
-    field(TWVL, "2")
-    field(THST, "UniqueID")
-    field(THVL, "3")
-    field(SCAN, "I/O Intr")
-}
 
 
 
@@ -313,7 +195,6 @@ record(longin, "$(P)$(R)NDFileIMM_NmissedTimeStamps_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDFileIMM_NmissedTimeStamps")
     field(SCAN, "I/O Intr")
-    field(FLNK, "$(P)$(R)FileNumber_Sync")
 }
 
 
@@ -333,7 +214,6 @@ record(longin, "$(P)$(R)NDFileIMM_NmissedIDs_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDFileIMM_NmissedIDs")
     field(SCAN, "I/O Intr")
-    field(FLNK, "$(P)$(R)FileNumber_Sync")
 }
 
 
@@ -352,7 +232,6 @@ record(longin, "$(P)$(R)NDFileIMM_Nimg_rst_ts_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDFileIMM_Nimg_rst_ts")
     field(SCAN, "I/O Intr")
-    field(FLNK, "$(P)$(R)FileNumber_Sync")
 }
 
 
@@ -369,7 +248,7 @@ record(mbbo, "$(P)$(R)NDFileIMM_throw_images")
     field(ZRVL, "0")
     field(ONST, "Throw NDArrays")
     field(ONVL, "1")
-
+    field(VAL,  "0")
 }
 
 record(mbbi, "$(P)$(R)NDFileIMM_throw_images_RBV")
@@ -382,6 +261,7 @@ record(mbbi, "$(P)$(R)NDFileIMM_throw_images_RBV")
     field(ONST, "Throw NDArrays")
     field(ONVL, "1")
     field(SCAN, "I/O Intr")
+    field(VAL, "0")
 }
 
 
@@ -415,5 +295,4 @@ record(longin, "$(P)$(R)NDFileIMM_fileevent")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDFileIMM_fileevent")
     field(SCAN, "I/O Intr")
-    field(FLNK, "$(P)$(R)FileNumber_Sync")
 }
