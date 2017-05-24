@@ -190,10 +190,10 @@ protected:
     int NDFileIMM_imm_corecoticks;
     int NDFileIMM_imm_elapsed;
     int NDFileIMM_imm_dlen;
-    
+    int NDFileIMM_format; 
     
 
-	enum {num_params=17};
+	enum {num_params=18};
 	param_type_str *paramStrings[num_params];
 
 		unsigned int file_coreco_ts;

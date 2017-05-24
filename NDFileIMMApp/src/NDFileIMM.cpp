@@ -306,7 +306,7 @@ asynStatus NDFileIMM::writeFile(NDArray *pArray)
 
 //NDFileFormat
 
-	getIntegerParam(NDFileFormat,&fileformat);
+	getIntegerParam(NDFileIMM_format,&fileformat);
 	// fileformat=0 RAW, 1 for compressed
 	//printf("Fileformat %i",fileformat);
 
@@ -1008,6 +1008,9 @@ NDFileIMM::NDFileIMM(const char *portName,int max_imm_bytes ,int queueSize, int 
          paramStrings[15]=new param_type_str(&NDFileIMM_imm_elapsed    ,asynParamFloat64,"NDFileIMM_imm_elapsed");
          paramStrings[16]=new param_type_str(&NDFileIMM_imm_dlen       ,asynParamInt32,"NDFileIMM_imm_dlen");
 
+         paramStrings[17]=new param_type_str(&NDFileIMM_format       ,asynParamInt32,"NDFileIMM_format");
+
+	setIntegerParam(NDFileIMM_format , 0);
 
         setIntegerParam(NDFileIMM_is_already_imm , 0);
         setIntegerParam(NDFileIMM_imm_systicks   , 0);
