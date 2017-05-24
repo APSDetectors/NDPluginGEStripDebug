@@ -1010,13 +1010,6 @@ NDFileIMM::NDFileIMM(const char *portName,int max_imm_bytes ,int queueSize, int 
 
          paramStrings[17]=new param_type_str(&NDFileIMM_format       ,asynParamInt32,"NDFileIMM_format");
 
-	setIntegerParam(NDFileIMM_format , 0);
-
-        setIntegerParam(NDFileIMM_is_already_imm , 0);
-        setIntegerParam(NDFileIMM_imm_systicks   , 0);
-        setIntegerParam(NDFileIMM_imm_corecoticks, 0);
-        setDoubleParam(NDFileIMM_imm_elapsed    ,0 );
-        setIntegerParam(NDFileIMM_imm_dlen       , 0);
 
 
     this->supportsMultipleArrays = 1;
@@ -1039,7 +1032,15 @@ NDFileIMM::NDFileIMM(const char *portName,int max_imm_bytes ,int queueSize, int 
 
 	}
 
-		setIntegerParam(NDFileIMM_threshold, 0);
+	setIntegerParam(NDFileIMM_format , 0);
+
+        setIntegerParam(NDFileIMM_is_already_imm , 0);
+        setIntegerParam(NDFileIMM_imm_systicks   , 0);
+        setIntegerParam(NDFileIMM_imm_corecoticks, 0);
+        setDoubleParam(NDFileIMM_imm_elapsed    ,0 );
+        setIntegerParam(NDFileIMM_imm_dlen       , 0);
+
+       setIntegerParam(NDFileIMM_threshold, 0);
 
 		last_filenumber=0;
 
