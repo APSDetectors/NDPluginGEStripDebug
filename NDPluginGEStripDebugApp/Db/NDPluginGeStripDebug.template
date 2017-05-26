@@ -1,0 +1,66 @@
+# Database for NDFile driver, which saves files for NDArray data.
+# Mark Rivers, Tim Madden
+# April 7, 2008, Nov 2009
+
+include "NDPluginBase.template"
+
+   
+
+record(longin, "$(P)$(R)GePD_messagetype_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GePD_messagetype")
+    field(SCAN, "I/O Intr")
+}
+
+    
+
+record(longin, "$(P)$(R)GePD_num_mess_start_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GePD_num_mess_start")
+    field(SCAN, "I/O Intr")
+}
+
+
+record(longin, "$(P)$(R)GePD_num_mess_meta_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GePD_num_mess_meta")
+    field(SCAN, "I/O Intr")
+}
+
+
+record(longin, "$(P)$(R)GePD_num_mess_data_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GePD_num_mess_data")
+    field(SCAN, "I/O Intr")
+}
+
+
+record(longin, "$(P)$(R)GePD_num_mess_fnum_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GePD_num_mess_fnum")
+    field(SCAN, "I/O Intr")
+}
+
+
+
+record(longin, "$(P)$(R)GePD_frame_num_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GePD_frame_num")
+    field(SCAN, "I/O Intr")
+}
+
+       
+

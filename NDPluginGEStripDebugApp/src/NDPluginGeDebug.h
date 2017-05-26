@@ -67,6 +67,28 @@ public:
 
 
 protected:
+    //
+    // params
+    //
+
+    int GePD_messagetype;
+    int GePD_num_mess_start;
+    int GePD_num_mess_meta;
+    int GePD_num_mess_data;
+    int GePD_num_mess_fnum;
+    int GePD_frame_num;
+
+   //ebd oarans
+   //
+    
+    
+    
+    
+    
+    
+    
+    
+    
     int arrayDataId;
     int uniqueIdId;
     int timeStampId;

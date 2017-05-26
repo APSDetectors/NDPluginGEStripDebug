@@ -53,7 +53,11 @@ void NDPluginGeDebug::processCallbacks(NDArray *pArray)
 	char description[256];
 	int ival;
 	NDAttrDataType_t attrDataType;
-	
+
+
+    NDPluginDriver::beginProcessCallbacks(pArray);
+
+
 	numAttributes = pArray->pAttributeList->count();
 
 	printf("Num Attributes %i \n", numAttributes);
@@ -85,12 +89,57 @@ void NDPluginGeDebug::processCallbacks(NDArray *pArray)
 	
 	}
 
+        if (strcmp(name,"maia_type")==0)
+	{ 
+	  int cnt;
+
+		setIntegerParam(GePD_messagetype,ival);
+
+		switch(ival)
+		{
+		    case 0:
+          		getIntegerParam(GePD_num_mess_data,&cnt);
+			cnt++;
+			setIntegerParam(GePD_num_mess_data,cnt);
+		    break;
+		    case 1:
+
+          		getIntegerParam(GePD_num_mess_meta,&cnt);
+			cnt++;
+			setIntegerParam(GePD_num_mess_meta,cnt);
+		    break;
+		    case 2:
+
+          		getIntegerParam(GePD_num_mess_start,&cnt);
+			cnt++;
+			setIntegerParam(GePD_num_mess_start,cnt);
+		    break;
+		    case 3:
+
+          		getIntegerParam(GePD_num_mess_fnum,&cnt);
+			cnt++;
+			setIntegerParam(GePD_num_mess_fnum,cnt);
+		    break;
+
+		}
+
+
+
+
+
+	}
+
 
 	        pAttribute = pArray->pAttributeList->next(pAttribute);
 		// pAttribute = pArray->nextAttribute(pAttribute);
 	}
 	// call base class function...
 //	NDPluginDriver::processCallbacks(pArray);
+    
+    	NDPluginDriver::endProcessCallbacks(pArray, true, true);
+
+    	
+    
     callParamCallbacks();
 }
 
@@ -171,6 +220,25 @@ NDPluginGeDebug::NDPluginGeDebug(const char *portName,int max_imm_bytes ,int que
 
 //    this->supportsMultipleArrays = 1;
     this->pAttributeId = NULL;
+
+    createParam("GePD_messagetype",         asynParamInt32, &GePD_messagetype);
+    createParam("GePD_num_mess_start",         asynParamInt32, &GePD_num_mess_start);
+    createParam("GePD_num_mess_meta",         asynParamInt32, &GePD_num_mess_meta);
+    createParam("GePD_num_mess_data",         asynParamInt32, &GePD_num_mess_data);
+    createParam("GePD_num_mess_fnum",         asynParamInt32, &GePD_num_mess_fnum);
+    createParam("GePD_frame_num",         asynParamInt32, &GePD_frame_num);
+
+
+    setIntegerParam(GePD_messagetype  ,0);
+    setIntegerParam( GePD_num_mess_start ,0);
+    setIntegerParam( GePD_num_mess_meta ,0);
+    setIntegerParam( GePD_num_mess_data ,0);
+    setIntegerParam( GePD_num_mess_fnum ,0);
+    setIntegerParam(GePD_frame_num  ,0);
+
+
+
+
 
     /* Try to connect to the array port */
     connectToArrayPort();
