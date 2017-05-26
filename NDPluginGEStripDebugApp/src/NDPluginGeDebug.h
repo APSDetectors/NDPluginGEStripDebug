@@ -5,8 +5,8 @@
  * April 17, 2009
  */
 
-#ifndef NDFileIMM_H
-#define NDFileIMM_H
+#ifndef NDPluginGeDebug_H
+#define NDPluginGeDebug_H
 
 
 #ifdef _WIN32
@@ -38,39 +38,11 @@ using std::string;
 
 
 
-#include "NDPluginFile.h"
-//#include "tiffio.h"
-#include "compressed_file2.h"
-
-/* This version number is an attribute in the TIFF file to allow readers
- * to handle changes in the file contents */
-//#define NDTIFFFileVersion 1.0
-
-/* Max String Param Length */
-struct param_type_str
-{
-
-	param_type_str(int *ix, int ip, char* sx){
-		str_ptr=new char[128];
-		int_ptr=ix;
-		param_type = ip;
-		strcpy(str_ptr,sx);
-		};
-	~param_type_str(){delete(str_ptr);};
-
-	int *int_ptr;
-	int param_type;
-	char *str_ptr;
-};
+#include "NDPluginDriver.h"
 
 
 
 
-
-
-
-
-using namespace nd_imm_plugin;
 
 /** Writes NDArrays in the TIFF file format.
     Tagged Image File Format is a file format for storing images.  The format was originally created by Aldus corporation and is
@@ -78,32 +50,21 @@ using namespace nd_imm_plugin;
     The current version is only capable of writes 2D images with 1 image per file.
     */
 
-class NDFileIMM : public NDPluginFile {
+class NDPluginGeDebug : public NDPluginDriver {
 public:
-    NDFileIMM(const char *portName,int max_imm_bytes, int queueSize, int blockingCallbacks,
+    NDPluginGeDebug(const char *portName,int max_imm_bytes, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,
                  int priority, int stackSize);
 
 	virtual void processCallbacks(NDArray *pArray);
     /* The methods that this class implements */
-    virtual asynStatus openFile(const char *fileName, NDFileOpenMode_t openMode, NDArray *pArray);
-    virtual asynStatus readFile(NDArray **pArray);
-    virtual asynStatus writeFile(NDArray *pArray);
-    virtual asynStatus closeFile();
 
 // virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo,
 //                             const char **pptypeName, size_t *psize);
 
 
 
-	int recursePath(char *pathstr, bool is_makedirs);
 
-
-asynStatus writeOctet(
-	asynUser *pasynUser, 
-	const char *value,
-      	size_t nChars, 
-	size_t *nActual);
 
 protected:
     int arrayDataId;
@@ -112,10 +73,7 @@ protected:
     int nextRecord;
     int *pAttributeId;
     
-    int max_imm_bytes;
-		bool is_open_good;
 
-	compressed_file *cf;
 
 	NDAttribute *pAttribute;
     char name[256];
@@ -133,7 +91,6 @@ protected:
 	int imm_pixels;
 	unsigned int fpga_timestamp;
 	
-	comp_img_header *fpga_header;
 
     int is_already_imm;
     int pipe_num_shorts;
@@ -168,37 +125,9 @@ protected:
 	//
 	// Params
 	//
-	int NDFileIMM_threshold;
-    // from old dalsa fpga real time compression fpga, old fccd
-	int NDFileIMM_is_imm_comp;
-	
-	int NDFileIMM_num_imm_pixels;
-	
-    
-    int NDFileIMM_timestamp;
-    int NDFileIMM_uniqueID;
-    int NDFileIMM_printAttributes;
-    int NDFileIMM_NmissedTimeStamps;
-    int NDFileIMM_framePeriod;
-    int NDFileIMM_NmissedIDs;
-	int NDFileIMM_Nimg_rst_ts;
-	int NDFileIMM_throw_images;
-	int NDFileIMM_fileevent;
-    
-    int NDFileIMM_is_already_imm;
-    int NDFileIMM_imm_systicks;
-    int NDFileIMM_imm_corecoticks;
-    int NDFileIMM_imm_elapsed;
-    int NDFileIMM_imm_dlen;
-    int NDFileIMM_format; 
-    
 
 	enum {num_params=18};
-	param_type_str *paramStrings[num_params];
 
-		unsigned int file_coreco_ts;
-		double file_elapsed_ts;
-		unsigned int file_systick_ts;
 
 
 	int getIntParam(int param){
