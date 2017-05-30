@@ -52,6 +52,7 @@ void NDPluginGeDebug::processCallbacks(NDArray *pArray)
 	char name[256];
 	char description[256];
 	int ival;
+	int cnt;
 	NDAttrDataType_t attrDataType;
 
 
@@ -87,47 +88,49 @@ void NDPluginGeDebug::processCallbacks(NDArray *pArray)
 
 
 	
+		}
+//  maia_meta
+// maia_fnum
+//   maia_first_image
+// maia_num_events
+//
+//
+
+	
+        if (strcmp(name,"maia_num_events")==0)
+	{
+
+			setIntegerParam(GePD_num_mess_data,ival);
 	}
 
-        if (strcmp(name,"maia_type")==0)
-	{ 
-	  int cnt;
-
-		setIntegerParam(GePD_messagetype,ival);
-
-		switch(ival)
-		{
-		    case 0:
-          		getIntegerParam(GePD_num_mess_meta,&cnt);
-			cnt++;
-			setIntegerParam(GePD_num_mess_meta,cnt);
-		    break;
-		    case 1:
-
-          		getIntegerParam(GePD_num_mess_data,&cnt);
-			cnt++;
-			setIntegerParam(GePD_num_mess_data,cnt);
-		    break;
-		    case 2:
-
+        if (strcmp(name,"maia_fnum")==0)
+	{
           		getIntegerParam(GePD_num_mess_fnum,&cnt);
 			cnt++;
 			setIntegerParam(GePD_num_mess_fnum,cnt);
-		    break;
-		    case 3:
-
+			
+			setIntegerParam(GePD_frame_num,ival);
+	}
+        if (strcmp(name,"maia_first_image")==0)
+	{
           		getIntegerParam(GePD_num_mess_start,&cnt);
 			cnt++;
 			setIntegerParam(GePD_num_mess_start,cnt);
-		    break;
-
-		}
-
-
-
-
-
 	}
+        if (strcmp(name,"maia_meta")==0)
+	{
+
+          		getIntegerParam(GePD_num_mess_meta,&cnt);
+			cnt++;
+			setIntegerParam(GePD_num_mess_meta,cnt);
+	}
+
+
+
+
+
+
+
 
 
 	        pAttribute = pArray->pAttributeList->next(pAttribute);
