@@ -110,15 +110,15 @@ void NDPluginGeDebug::processCallbacks(NDArray *pArray)
 		    break;
 		    case 2:
 
-          		getIntegerParam(GePD_num_mess_start,&cnt);
-			cnt++;
-			setIntegerParam(GePD_num_mess_start,cnt);
-		    break;
-		    case 3:
-
           		getIntegerParam(GePD_num_mess_fnum,&cnt);
 			cnt++;
 			setIntegerParam(GePD_num_mess_fnum,cnt);
+		    break;
+		    case 3:
+
+          		getIntegerParam(GePD_num_mess_start,&cnt);
+			cnt++;
+			setIntegerParam(GePD_num_mess_start,cnt);
 		    break;
 
 		}

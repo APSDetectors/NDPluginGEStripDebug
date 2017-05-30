@@ -51,16 +51,10 @@ record(longin, "$(P)$(R)GePD_num_mess_fnum_RBV")
 record(longin, "$(P)$(R)GePD_frame_num_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))")
-    field(SCAN, "I/O Intr")
-}
-
-record(longin, "$(P)$(R)_RBV")
-{
-    field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GePD_frame_num")
     field(SCAN, "I/O Intr")
 }
+
 
        
 
